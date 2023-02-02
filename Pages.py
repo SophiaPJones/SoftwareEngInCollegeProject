@@ -97,7 +97,7 @@ class CreateAccount(Page):
                 else:
                     self.state.users[username] = User(username, password)
             else:
-                print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\nPlease try again.")
+                print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.")
                 self.onLoad()
 
     def print_content(self):
