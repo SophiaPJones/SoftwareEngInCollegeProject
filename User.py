@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import csv
 
 class User:
     def __init__(self, username, password):
