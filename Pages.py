@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """This file defines all of the pages in the application, as well as the functionality
 which that page depends on.
-
 A page typically has a parent, which is a reference to the parent page,
     a title, which is a string that defines what the page is called.
     login_required which determined whether a valid login is required to view the page,
     state, which is a State object. This is initialized when the program launches.
 A page also tends to have an onLoad function which runs when the page is loaded.
-
 """
 
 from State import *
@@ -113,6 +111,7 @@ class CreateAccount(Page):
                     self.state.current_page = self.state.root
                 else:
                     self.state.users[username] = User(username, password)
+                    self.state.users[username].save_account()
             else:
                 print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.")
                 self.onLoad()
@@ -156,6 +155,7 @@ class LearnSkills(Page):
         else:
             print("Invalid selection! Try again.")
             self.onLoad()
+
 class LearnPython(Page):
     def print_content(self):
         print(f"{self.split_tilde}\n Under construction.\n")
