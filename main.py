@@ -3,6 +3,13 @@ from Pages import *
 import csv
 
 def initialize_page_tree(state):
+    """
+    Initialize the application pages within the state. Mutates the state.
+    Parameters
+    _____________________
+    state: State
+       an instance of a State object. Typically the application state, which there should be only 1 of.
+    """
     state.root = Home(title="Home", state=state)
     state.root.children["Login"] = Login(title="Login", state=state, login_required = False)
     state.root.children["Create Account"] = CreateAccount(title="Create Account", state=state, login_required=False)

@@ -13,9 +13,8 @@ from User import *
 import Util
 
 class Page:
-    """ A base class off of which all other pages are built off of.
+    """ An base class off of which all other pages are built off of.
     """
-
     def __init__(self, title="", login_required = True, state=State(), parent=None):
         self.parent = parent
         self.state = state
@@ -38,7 +37,6 @@ class Home(Page):
     be reached from this page. It's effectively the root of the application, and
     it is represented in the application state as such.
     """
-
     def onLoad(self):
         self.print_content()
         self.navigate()
@@ -77,7 +75,7 @@ class Login(Page):
         password = input("\tPassword: ")
         cna = "Create New Account"
         if(username == cna or password == cna):
-            self.state.current_page = self.state.root.children["create account"]
+            self.state.current_page = self.state.root.children["Create Account"]
         elif(username == "" or password == ""):
             self.state.current_page = self.state.root
         else:
