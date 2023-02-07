@@ -89,13 +89,14 @@ class CreateAccount(Page):
         if username in self.state.users:
             print("That username is already taken! Try again.")
         else:
-            passwordValid = Util.test_password(password)
+            passwordValid = Util.validate_password(password)
             if passwordValid:
                 if len(self.state.users) >= Util.MAXIMUM_USER_COUNT:
                     print("All permitted accounts have been created, please come back later.\n")
                     self.state.current_page = self.state.root
                 else:
                     self.state.users[username] = User(username, password)
+                    self.state.users[username].save_account()
             else:
                 print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.")
                 self.onLoad()

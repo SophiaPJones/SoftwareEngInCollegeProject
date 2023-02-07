@@ -1,5 +1,6 @@
 from State import *
 from Pages import *
+import csv
 
 def initialize_page_tree(state):
     state.root = Home(title="Home", state=state)
@@ -13,9 +14,17 @@ def initialize_page_tree(state):
                                                       "Learn C++": LearnCPP(title="Learn C++", state = state),
                                                       "Learn How to Interview": LearnInterviews(title="Learn How to Interview", state = state),
                                                       "Learn Penetration Testing": LearnPenetrationTesting(title="Learn Penetration Test", state = state)}
+def load_accounts(state):
+    with open('accounts.csv') as csvFile:
+        accountList = csv.reader(csvFile, delimiter = ',')
+        for account in accountList:
+            state.users[account[0]] = User(account[0], account[1])
+        pass
+
 def main():
     #load users
     state = State()
+    load_accounts(state)
     initialize_page_tree(state)
     while(state.application_active):
             if(state.current_page == None): state.current_page = state.root
