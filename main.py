@@ -24,11 +24,15 @@ def initialize_page_tree(state):
                                                       "Learn Penetration Testing": LearnPenetrationTesting(title="Learn Penetration Test", state = state, parent = p)}
 
 def load_accounts(state):
-    with open('accounts.csv') as csvFile:
-        accountList = csv.reader(csvFile, delimiter = ',')
-        for account in accountList:
-            state.users[account[0]] = User(account[0], account[1])
-        pass
+    try:
+        with open('accounts.csv') as csvFile:
+            accountList = csv.reader(csvFile, delimiter = ',')
+            for account in accountList:
+                state.users[account[0]] = User(account[0], account[1])
+            pass
+    except:
+        return
+
 
 def main():
     #load users
