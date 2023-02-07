@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
+"""This file defines all of the pages in the application, as well as the functionality
+which that page depends on.
+
+A page typically has a parent, which is a reference to the parent page,
+    a title, which is a string that defines what the page is called.
+    login_required which determined whether a valid login is required to view the page,
+    state, which is a State object. This is initialized when the program launches.
+A page also tends to have an onLoad function which runs when the page is loaded.
+
+"""
+
 from State import *
 from User import *
 import Util
 
 class Page:
+    """ An base class off of which all other pages are built off of.
+    """
     def __init__(self, title="", login_required = True, state=State(), parent=None):
         self.parent = parent
         self.state = state
@@ -22,6 +35,10 @@ class Page:
         self.parent = new_parent
 
 class Home(Page):
+    """ The home page is the main page of the application. All other pages can
+    be reached from this page. It's effectively the root of the application, and
+    it is represented in the application state as such.
+    """
     def onLoad(self):
         self.print_content()
         self.navigate()
@@ -60,7 +77,7 @@ class Login(Page):
         password = input("\tPassword: ")
         cna = "Create New Account"
         if(username == cna or password == cna):
-            self.state.current_page = self.state.root.children["create account"]
+            self.state.current_page = self.state.root.children["Create Account"]
         elif(username == "" or password == ""):
             self.state.current_page = self.state.root
         else:
@@ -89,7 +106,7 @@ class CreateAccount(Page):
         if username in self.state.users:
             print("That username is already taken! Try again.")
         else:
-            passwordValid = Util.test_password(password)
+            passwordValid = Util.validate_password(password)
             if passwordValid:
                 if len(self.state.users) >= Util.MAXIMUM_USER_COUNT:
                     print("All permitted accounts have been created, please come back later.\n")
@@ -121,12 +138,11 @@ class FindUser(Page):
         self.state.current_page = self.state.root
 
 class LearnSkills(Page):
-    skills = {}
     def print_content(self):
         print(f"\n{self.split_star}\n",
               f"Time to learn some skills, {self.state.current_user.username}!\n",
               f"Select from one of the options below:\n")
-        for option in list(self.skills.keys()):
+        for option in list(self.children.keys()):
             print(f"> {option}")
         print('\n')
     def onLoad(self):
@@ -135,8 +151,8 @@ class LearnSkills(Page):
         if selection == "":
             self.state.current_page = self.state.root
             return
-        if selection in self.skills:
-            self.state.current_page = self.skills[selection]
+        if selection in self.children:
+            self.state.current_page = self.children[selection]
         else:
             print("Invalid selection! Try again.")
             self.onLoad()
