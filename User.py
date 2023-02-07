@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import csv
+
 class User:
     def __init__(self, username, password):
         self.username = username
@@ -12,6 +13,7 @@ class User:
 
     def save_account(self):
         account =(self.username,self.password)
+
         with open('accounts.csv','a') as target:
             writer = csv.writer(target)
             writer.writerow(account)
