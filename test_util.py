@@ -1,5 +1,4 @@
 from Util import *
-import pytest
 
 
 def test_contains_capital_letter():
