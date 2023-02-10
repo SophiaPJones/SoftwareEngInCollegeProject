@@ -16,9 +16,12 @@ class State:
     def load_accounts(self):
         try:
             with open(self.account_file_name) as csvFile:
-                accountList = csv.reader(csvFile, delimiter=',')
+                lines = list(line for line in (l.strip()
+                             for l in csvFile) if line)  # skip blank lines
+                accountList = csv.reader(lines, delimiter=',')
                 for account in accountList:
-                    self.users[account[0]] = User.User(account[0], account[1])
+                    self.users[account[2]] = User.User(
+                        account[0], account[1], account[2], account[3])
                 pass
         except:
             return
