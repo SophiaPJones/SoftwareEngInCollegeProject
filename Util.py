@@ -4,7 +4,7 @@ import os
 MINIMUM_PASSWORD_LENGTH = 8
 MAXIMUM_PASSWORD_LENGTH = 12
 MAXIMUM_USER_COUNT = 5
-
+MAXIMUM_JOB_COUNT = 5
 
 def contains_capital_letter(string):
     return [c for c in string if c.isupper()] != []
@@ -25,4 +25,7 @@ def validate_password(password):
 
 
 def clear_console():
-    os.system('CLS')
+    if os.name == "nt":
+        os.system('cls')
+    else:
+        os.system('clear')
