@@ -6,6 +6,7 @@ class User:
         self.last_name = last_name
         self.username = username
         self.password = password
+        self.success_story = ""
         pass
 
     def __string__(self):
@@ -15,4 +16,7 @@ class User:
         self.password = new_password
 
     def list(self):
-        return [self.first_name, self.last_name, self.username, self.password]
+        return [self.first_name, self.last_name, self.username, self.password, self.success_story]
+
+    def set_success_story(self, success_story):
+        self.success_story = success_story

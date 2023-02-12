@@ -18,12 +18,13 @@ def initialize_page_tree(state):
         title="Login", state=state, login_required=False)
     state.root.children["Create Account"] = CreateAccount(
         title="Create Account", state=state, login_required=False)
+    state.root.children["My Account Settings"] = ManageAccount(title = "ManageAccount", state = state, login_required=True)
     state.root.children["Job Search"] = JobSearch(
-        title="Job Search", state=state)
-    state.root.children["Find Someone You Know"] = FindUser(
-        title="Find a User", state=state)
+        title="Job Search", state=state, login_required=False, parent=state.root)
+    state.root.children["Find Someone Who Can Help!"] = FindUser(
+        title="Find a User", state=state, login_required = False)
     state.root.children["Learn New Skills"] = LearnSkills(
-        title="Learn New Skills", state=state, parent=state.root.title)
+        title="Learn New Skills", state=state, parent=state.root)
     p = state.root.children["Learn New Skills"]
     state.root.children["Learn New Skills"].children = {"Learn Python": LearnPython(title="Learn Python", state=state, parent=p),
                                                         "Learn Resume Building": LearnResumeBuilding(title="Learn Resume Building", state=state, parent=p),
@@ -31,12 +32,18 @@ def initialize_page_tree(state):
                                                         "Learn How to Interview": LearnInterviews(title="Learn How to Interview", state=state, parent=p),
                                                         "Learn Penetration Testing": LearnPenetrationTesting(title="Learn Penetration Test", state=state, parent=p)}
 
+    p = state.root.children["Job Search"]
+    p.children = {"Post a Job": PostJob(title="Post a Job", state=state, parent=p)}
+
 
 def main():
     # load users
     state = State()
     state.account_file_name = 'accounts.csv'
+    state.job_file_name = 'jobs.csv'
     state.load_accounts()
+    state.load_success_stories()
+    state.load_jobs()
     initialize_page_tree(state)
     while (state.application_active):
         if (state.current_page == None):
