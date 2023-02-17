@@ -59,7 +59,7 @@ class Page:
         selection = input(
             "Type the page you'd like to navigate to. (Number or exact name): ")
         if (selection == "0"):  # Change page to parent page
-            if(self.state.current_page == self.state.root):
+            if (self.state.current_page == self.state.root):
                 self.state.application_active = False
             else:
                 self.state.current_page = self.parent
@@ -103,8 +103,9 @@ class Home(Page):
     def print_content(self):
         welcome_message = "Welcome to inCollege!" if self.state.current_user == None else f"Welcome to inCollege, {self.state.current_user.username}!"
         print(f"{self.split_star}\n\n{welcome_message}\n\n{self.split_tilde}")
-        if(self.state.success_stories != {}):
-            user, story = random.choice(list(self.state.success_stories.items()))
+        if (self.state.success_stories != {}):
+            user, story = random.choice(
+                list(self.state.success_stories.items()))
             print(f"Hear one of our user's success stories!: {story}")
         else:
             print(f"Hear one of our user's success stories!: \n\t\t'inCollege helped me get the skills I needed to succeed,\n\t\tand set me up with a network of contacts that helped\n\t\tme find a great job!' -- Sylvia K.")
@@ -115,23 +116,30 @@ class ManageAccount(Page):
         clear_console()
         self.print_content()
         self.menu()
+
     def print_content(self):
         print(f"Manage your InCollege Account!\n{self.split_star}")
-        print(f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
+        print(
+            f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
+
     def menu(self):
         print("Select an option to change on your account or return home:\n")
         print(f"\t0. Return Home")
-        print(f"\t1. Update First Name (Currently: {self.state.current_user.first_name})")
-        print(f"\t2. Update Last Name (Currently: {self.state.current_user.last_name})")
+        print(
+            f"\t1. Update First Name (Currently: {self.state.current_user.first_name})")
+        print(
+            f"\t2. Update Last Name (Currently: {self.state.current_user.last_name})")
         print(f"\t3. Update Password")
-        print(f"\t4. Add your success story!\nCurrently your success story is: {self.state.current_user.success_story}")
-        selection = input("Type your preferred option or enter corresponding number: ")
+        print(
+            f"\t4. Add your success story!\nCurrently your success story is: {self.state.current_user.success_story}")
+        selection = input(
+            "Type your preferred option or enter corresponding number: ")
         selection = "".join(selection.split()).lower()
         if (selection == "updatefirstname" or
             selection == "firstname" or
             selection == "first" or
             selection == "1" or
-            selection == "1."):
+                selection == "1."):
             self.change_first_name()
         elif (selection == "updatelastname" or
               selection == "lastname" or
@@ -155,14 +163,15 @@ class ManageAccount(Page):
               selection == "4"):
             self.change_success_story()
         elif (selection == "home" or
-               selection == "0" or
-               selection == "0." or
-               selection == "returnhome" or
-               selection == "return"):
+              selection == "0" or
+              selection == "0." or
+              selection == "returnhome" or
+              selection == "return"):
             self.state.current_page = self.parent
+
     def change_first_name(self):
         new_first_name = input("\nEnter new first name: ")
-        while(new_first_name == ""):
+        while (new_first_name == ""):
             new_first_name = input("\nEnter new first name:")
         self.state.current_user.first_name = new_first_name
         if (self.state.save_accounts() == True):
@@ -171,7 +180,7 @@ class ManageAccount(Page):
 
     def change_last_name(self):
         new_last_name = input("\nEnter new last name: ")
-        while(new_last_name == ""):
+        while (new_last_name == ""):
             new_last_name = input("\nEnter new last name:")
         self.state.current_user.last_name = new_last_name
         if (self.state.save_accounts() == True):
@@ -181,7 +190,7 @@ class ManageAccount(Page):
     def change_password(self):
         new_password = input("\nEnter new password: ")
         passwordValid = Util.validate_password(new_password)
-        while(not passwordValid):
+        while (not passwordValid):
             print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.\n")
             new_password = input("\nEnter new password: ")
             passwordValid = Util.validate_password(new_password)
@@ -196,7 +205,8 @@ class ManageAccount(Page):
 
     def change_success_story(self):
         new_success_story = ""
-        user_story_in = input("Enter new success story (type nothing and press enter to stop): ")
+        user_story_in = input(
+            "Enter new success story (type nothing and press enter to stop): ")
         while user_story_in != "":
             new_success_story += user_story_in + "\n"
             user_story_in = input("\t> ")
@@ -212,33 +222,36 @@ class PostJob(Page):
         clear_console()
         self.print_content()
         title = input("\tEnter job title: ")
-        if(title == ""):
+        if (title == ""):
             self.state.current_page = self.parent
             return
         description = input("\tEnter a brief description: ")
-        if(description == ""):
+        if (description == ""):
             self.state.current_page = self.parent
             return
         employer = input("\tEnter the employer organization: ")
-        if(employer == ""):
+        if (employer == ""):
             self.state.current_page = self.parent
             return
         location = input("\tEnter the job location: ")
-        if(location == ""):
+        if (location == ""):
             self.state.current_page = self.parent
             return
         salary = input("\tEnter the salary: ")
-        if(salary == ""):
+        if (salary == ""):
             self.state.current_page = self.parent
             return
         new_job = Job(title, description, employer, location, salary)
         self.state.jobs.append(new_job)
-        if(not self.state.save_jobs()):
+        if (not self.state.save_jobs()):
             self.state.jobs.pop()
         self.state.current_page = self.parent
+
     def print_content(self):
-        print(f"Post a job opportunity for inCollege users to apply to! Enter nothing on any of the options to cancel and return home.\n{self.split_star}\n")
+        print(
+            f"Post a job opportunity for inCollege users to apply to! Enter nothing on any of the options to cancel and return home.\n{self.split_star}\n")
         pass
+
 
 class FindUser(Page):
     def onLoad(self):
@@ -246,21 +259,24 @@ class FindUser(Page):
         self.print_content()
         first_name = input("\tEnter a first name: ")
         last_name = input("\tEnter a last name: ")
-        contacts = [val for key, val in self.state.users.items() if (val.first_name == first_name and val.last_name == last_name)]
+        contacts = [val for key, val in self.state.users.items() if (
+            val.first_name == first_name and val.last_name == last_name)]
         if contacts != []:
             print(f"\nThey are a part of the inCollege system!")
-            if(self.state.current_user == None):
-                print(f"\nYou can log in or create an account to contact them! Select your option below:\n")
+            if (self.state.current_user == None):
+                print(
+                    f"\nYou can log in or create an account to contact them! Select your option below:\n")
                 print(f"\t0. Return Home")
                 print(f"\t1. Log In")
                 print(f"\t2. Create Account")
-                selection = input("\nEnter the number corresponding to your selection or type the option you want: ")
+                selection = input(
+                    "\nEnter the number corresponding to your selection or type the option you want: ")
                 selection = "".join(selection.split()).lower()
                 if (selection == "0."
                     or selection == "0"
                     or selection == "returnhome"
                     or selection == "return"
-                    or selection == "home"):
+                        or selection == "home"):
                     self.state.current_page = self.parent
                 elif (selection == "1."
                       or selection == "1"
@@ -272,8 +288,12 @@ class FindUser(Page):
                     self.state.current_page = self.state.root.children["Create Account"]
         else:
             print(f"\nThey are not yet part of the inCollege system!")
+            self.input_to_continue()
+            self.state.current_page = self.parent
+
     def print_content(self):
-        print(f"\nFind someone who can help! Search for a user by first and last name below.\n {self.split_tilde}")
+        print(
+            f"\nFind someone who can help! Search for a user by first and last name below.\n {self.split_tilde}")
 
 
 class Login(Page):
