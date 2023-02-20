@@ -34,6 +34,48 @@ def initialize_page_tree(state):
 
     p = state.root.children["Job Search"]
     p.children = {"Post a Job": PostJob(title="Post a Job", state=state, parent=p)}
+    
+    state.root.children['Useful Links']= UsefulLinks(
+        title="Useful Links", state=state, parent=state.root, login_required = False)
+    
+    p = state.root.children['Useful Links']
+    
+    state.root.children["Useful Links"].children={
+        "General": General(title='General Links',state=state,parent=p, login_required = False),
+        "Browse InCollege":BrowseInCollege(title='Browse InCollege',state=state,parent=p, login_required = False),
+        "Business Solutions":BusinessSolutions(title='Business Solutions',state=state,parent=p, login_required = False),
+        "Directories":Directories(title='Directories',state=state,parent=p, login_required = False)
+    }
+
+    state.root.children['InCollege Important Links']= InCollegeImportantLinks(
+        title="InCollege Important Links", state=state, parent=state.root, login_required = False)
+    
+    p = state.root.children['InCollege Important Links']
+    
+    state.root.children['InCollege Important Links'].children={
+        "A Copyright Notice": CopyRightNotice(title='A Copyright Notice',state=state,parent=p, login_required = False),
+        "About":About(title='About',state=state,parent=p, login_required = False),
+        "Accessibility":Accessibility(title='Accessibility',state=state,parent=p, login_required = False),
+        "User Agreement":UserAgreement(title='User Agreement',state=state,parent=p, login_required = False),
+        "Privacy Policy":PrivacyPolicy(title='Privacy Policy',state=state,parent=p, login_required = False),
+        "Cookie Policy":CookiePolicy(title='Cookie Policy',state=state,parent=p, login_required = False),
+        'Copyright Policy':CopyrightPolicy(title='Copyright Policy',state=state,parent=p, login_required = False),
+        'Brand Policy':BrankPolicy(title='Brand Policy',state=state,parent=p, login_required = False),
+        'Guest Controls, Languages':GuestControlsLanguage(title='Guest Controls, Languages',state=state,parent=p, login_required = False)
+
+    }
+
+    p = state.root.children["Useful Links"].children["General"]
+
+    state.root.children["Useful Links"].children['General'].children = {
+        "Sign Up": CreateAccount(title='General Links',state=state,parent=p, login_required = False),
+        "Help Center":HelpCenter(title='Browse InCollege',state=state,parent=p, login_required = False),
+        "About":About(title='Business Solutions',state=state,parent=p, login_required = False),
+        "Press":Press(title='Directories',state=state,parent=p, login_required = False),
+        "Blog":Blog(title='Directories',state=state,parent=p, login_required = False),
+        "Careers":Careers(title='Directories',state=state,parent=p, login_required = False),
+        "Developers":Developers(title='Directories',state=state,parent=p, login_required = False)
+    }
 
 
 def main():
