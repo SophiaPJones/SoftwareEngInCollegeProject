@@ -6,6 +6,9 @@ MAXIMUM_PASSWORD_LENGTH = 12
 MAXIMUM_USER_COUNT = 5
 MAXIMUM_JOB_COUNT = 5
 
+language_list = ["english", "spanish"]
+
+
 def contains_capital_letter(string):
     return [c for c in string if c.isupper()] != []
 
