@@ -18,25 +18,27 @@ class State:
         self.success_stories = {}
 
     def load_accounts(self):
-        try:
-            with open(self.account_file_name, encoding="utf8") as csvFile:
-                lines = list(line for line in (l.strip()
-                             for l in csvFile) if line)  # skip blank lines
-                accountList = csv.reader(lines, delimiter=',')
-                for account in accountList:
-                    self.users[account[2]] = User.User(
-                        account[0],  # first name
-                        account[1],  # last name
-                        account[2],  # username
-                        account[3])  # password
-                    account[4] = account[4].replace('\u2063', '\n')
-                    account[4] = account[4].replace('\u2064', ',')
-                    self.users[account[2]].set_success_story(
-                        account[4])  # success story
+        with open(self.account_file_name, encoding="utf8") as csvFile:
+            lines = list(line for line in (l.strip()
+                         for l in csvFile) if line)  # skip blank lines
+            accountList = csv.reader(lines, delimiter=',')
+            for account in accountList:
+                print("loading account")
+                self.users[account[2]] = User.User(
+                    account[0],  # first name
+                    account[1],  # last name
+                    account[2],  # username
+                    account[3],  # password
+                    account[5],  # email permission
+                    account[6],  # sms permission
+                    account[7],  # targeted ad permission
+                    account[8])  # language
+                account[4] = account[4].replace('\u2063', '\n')
+                account[4] = account[4].replace('\u2064', ',')
+                self.users[account[2]].set_success_story(
+                    account[4])  # success story
 
-                pass
-        except:
-            return
+            pass
 
     def save_accounts(self):
         if len(self.users) <= Util.MAXIMUM_USER_COUNT:
