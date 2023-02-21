@@ -288,6 +288,8 @@ class FindUser(Page):
                     self.state.current_page = self.state.root.children["Create Account"]
         else:
             print(f"\nThey are not yet part of the inCollege system!")
+            self.input_to_continue()
+            self.state.current_page = self.state.current_page.parent
 
     def print_content(self):
         print(
