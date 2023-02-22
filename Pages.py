@@ -793,8 +793,7 @@ class Language(Page):
         new_language = input("\nEnter 0 for English, 1 for Spanish: ")
         while (new_language == ""):
             new_language = input("\nEnter 0 for English, 1 for Spanish: ")
-        self.state.current_user.language = new_language
-        if (self.state.save_accounts() == True):
+        if (self.state.current_user.change_language(int(new_language)) and self.state.save_accounts() == True):
             print("\nLanguage changed Successfully")
             self.input_to_continue()
 
