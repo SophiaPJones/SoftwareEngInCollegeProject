@@ -586,7 +586,7 @@ class CopyRightNotice(Page):
 
 class About(Page):
     def print_content(self):
-        print(f"{self.split_tilde}\n This is About Page.\n")
+        print(f"{self.split_tilde}\n In College: Welcome to In College, the world's largest college student network with many users in many countries and territories worldwide\n")
 
     def onLoad(self):
         clear_console()
@@ -739,7 +739,7 @@ class CopyrightPolicy(Page):
         self.page_select()
 
 
-class BrankPolicy(Page):
+class BrandPolicy(Page):
     def print_content(self):
         print(f"{self.split_tilde}\n This is Brand Policy Page.\n")
 
@@ -800,7 +800,7 @@ class Language(Page):
 
 class HelpCenter(Page):
     def print_content(self):
-        print(f"{self.split_tilde}\n Under construction.\n")
+        print(f"{self.split_tilde}\n We're here to help\n")
 
     def onLoad(self):
         clear_console()
@@ -815,7 +815,7 @@ class HelpCenter(Page):
 
 class Press(Page):
     def print_content(self):
-        print(f"{self.split_tilde}\n Under construction.\n")
+        print(f"{self.split_tilde}\n In College Pressroom: Stay on top of the latest news, updates, and reports\n")
 
     def onLoad(self):
         clear_console()
