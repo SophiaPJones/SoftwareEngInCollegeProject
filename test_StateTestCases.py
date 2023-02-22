@@ -81,7 +81,7 @@ class StateTestCases(TestCase):
 
     def test_user_list(self):
         user = User("first","second","Username1", "Password1!")
-        assert user.list() == ["first","second","Username1","Password1!"]
+        assert user.list() == ["first","second","Username1","Password1!","",True,True,True,0]
 
     def test_user_success_story(self):
         user = User("first","second","Username1", "Password1!")
