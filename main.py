@@ -52,7 +52,7 @@ def initialize_page_tree(state):
         "Privacy Policy": PrivacyPolicy(title='Privacy Policy', state=state, parent=p, login_required=False),
         "Cookie Policy": CookiePolicy(title='Cookie Policy', state=state, parent=p, login_required=False),
         'Copyright Policy': CopyrightPolicy(title='Copyright Policy', state=state, parent=p, login_required=False),
-        'Brand Policy': BrankPolicy(title='Brand Policy', state=state, parent=p, login_required=False),
+        'Brand Policy': BrandPolicy(title='Brand Policy', state=state, parent=p, login_required=False),
         'Guest Controls': [],  # Temporary
         'Languages': Language(title='Languages', state=state, parent=p, login_required=True)
 
