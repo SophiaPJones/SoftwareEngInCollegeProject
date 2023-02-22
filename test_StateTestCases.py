@@ -100,3 +100,4 @@ class StateTestCases(TestCase):
         user = User("first","second","Username1", "Password1!")
         user.change_language(0)
         assert user.language == 0
+
