@@ -872,3 +872,195 @@ class Developers(Page):
     def navigate(self):
         self.print_menu()
         self.page_select()
+
+
+'''
+    Students will be able to search for students in the system by last name, university, or major. When 
+    results of these searches are displayed, the student will have the option of sending that student a 
+    request to connect.  
+'''
+
+
+class SearchStudents(Page):
+    def print_content(self):
+        print(f"Search for other students!\n{self.split_star}")
+        print(f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
+
+    def onLoad(self):
+        clear_console()
+        self.menu()
+        pass
+
+    def navigate(self):
+        self.print_menu()
+        self.page_select()
+
+    def menu(self):
+        print("Select an option to change on your account or return home:\n")
+        print(f"\t0. Return Home")
+        print(
+            f"\t1. Search by Last Name")
+        print(
+            f"\t2. Search by University")
+        print(
+            f"\t3. Search by Major")
+        selection = input(
+            "Type your preferred option or enter corresponding number: ")
+        selection = "".join(selection.split()).lower()
+        if (selection == "last name" or
+                selection == "1" or
+                selection == "1."):
+            self.search(byName=True)
+        elif (selection == "university" or
+              selection == "2" or
+              selection == "2."):
+            self.search(byUniversity=True)
+        elif (selection == "major" or
+              selection == "3" or
+              selection == "3."):
+            self.search(byMajor=True)
+
+        elif (selection == "home" or
+              selection == "0" or
+              selection == "0." or
+              selection == "returnhome" or
+              selection == "return"):
+            self.state.current_page = self.parent
+
+    def search(self, byName=False, byUniversity=False, byMajor=False):
+        # if the user is searching by last name, ask for the last name
+        last_name, university, major = None, None, None
+        if byName:
+            last_name = input("\nEnter the last name of the student you are looking for: ")
+            if last_name == "":
+                print("\nPlease enter a last name.")
+                self.input_to_continue()
+                return
+
+        # if the user is searching by university, ask for the university
+        elif byUniversity:
+            university = input("\nEnter the university of the student you are looking for: ")
+            if university == "":
+                print("\nPlease enter a university.")
+                self.input_to_continue()
+                return
+
+        # if the user is searching by major, ask for the major
+        elif byMajor:
+            major = input("\nEnter the major of the student you are looking for: ")
+            if major == "":
+                print("\nPlease enter a major.")
+                self.input_to_continue()
+                return
+
+        user = self.is_exists(last_name, university, major)
+        if user is None:
+            print("\nSorry, that student does not exist in our system.1")
+            self.input_to_continue()
+            return
+        else:
+            # if user is a student and the last name matches the input, display the student's information
+            if last_name == user.last_name.strip().lower() and user.username != self.state.current_user.username:
+                # check status of the current user
+                status = self.get_status(user.username)
+                if status == "friends":
+                    print("You are already connected to this student.")
+                    # ask if the user wants to remove the student from their list of friends
+                    remove = input("Would you like to remove this student from your list of friends? (y/n): ")
+                    if remove == "y":
+                        self.remove_friend(user.username)
+                    self.input_to_continue()
+                    return
+                elif status == "pending":
+                    print("You have already sent a request to connect to this student.")
+                    self.input_to_continue()
+                    return
+                elif status == "request":
+                    print("This student has sent you a request to connect.")
+                    # ask if the user wants to accept the student's request
+                    accept = input("Would you like to accept this student's request? (y/n): ")
+                    if accept == "y":
+                        self.accept_request(user.username)
+                    self.input_to_continue()
+                    return
+                else:
+                    # ask if the user wants to send a request to connect to the student
+                    send = input("Would you like to send a request to connect to this student? (y/n): ")
+                    if send == "y":
+                        self.send_request(user.username)
+                    self.input_to_continue()
+                    return
+            else:
+                print("\nSorry, that student does not exist in our system.")
+                self.input_to_continue()
+                return
+
+    def is_exists(self, lastname=None, university=None, major=None):
+        if lastname:
+            for key in self.state.users:
+                user = self.state.users[key]
+                if lastname.strip().lower() == user.last_name.strip().lower() and user.username != self.state.current_user.username:
+                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    return user
+            return None
+        elif university:
+            for key in self.state.users:
+                user = self.state.users[key]
+                if lastname.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
+                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    return user
+            return None
+        elif major:
+            for key in self.state.users:
+                user = self.state.users[key]
+                if lastname.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
+                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    return user
+            return None
+        else:
+            return None
+
+    def get_status(self, other_user):
+        # check if the current user is already friends with the student
+        if other_user in self.state.current_user.friends:
+            return "friends"
+        # check if the current user has already sent a request to the student
+        elif other_user in self.state.current_user.sent_requests:
+            return "pending"
+        # check if the student has already sent a request to the current user
+        elif other_user in self.state.current_user.pending_requests:
+            return "request"
+        else:
+            return "none"
+
+    def send_request(self, other_username):
+        # add the current user's username to the student's list of pending requests
+        self.state.users[other_username].pending_requests.append(self.state.current_user.username)
+        # add the student's username to the current user's list of sent requests
+        self.state.current_user.sent_requests.append(other_username)
+
+        print("\nRequest sent successfully!")
+        self.input_to_continue()
+        return
+    def remove_friend(self, other_user):
+        # remove the current user's username from the student's list of friends
+        other_user.friends.remove(self.state.current_user.username)
+        # remove the student's username from the current user's list of friends
+        self.state.current_user.friends.remove(other_user.username)
+        # save the changes to the system
+        print("\nYou are no longer connected to this student.")
+        self.input_to_continue()
+        return
+    def print_friends(self):
+        self.state.current_user = self.state.users[self.state.current_user.username]
+        print(f"\nFriends\n{self.split_star}")
+
+        if len(self.state.current_user.friends) == 0:
+            print("\tYou have no friends.")
+            self.input_to_continue()
+            return
+
+        for friend in self.state.current_user.friends:
+            print(f"\t{friend}")
+        self.input_to_continue()
+        return
