@@ -1005,14 +1005,14 @@ class SearchStudents(Page):
         elif university:
             for key in self.state.users:
                 user = self.state.users[key]
-                if lastname.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
+                if university.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
                     print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         elif major:
             for key in self.state.users:
                 user = self.state.users[key]
-                if lastname.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
+                if major.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
                     print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
