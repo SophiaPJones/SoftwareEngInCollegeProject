@@ -989,6 +989,7 @@ class SearchStudents(Page):
                         "Would you like to remove this student from your list of friends? (y/n): ")
                     if remove == "y":
                         self.remove_friend(user.username)
+                    self.input_to_continue()
                     return
                 elif status == "pending":
                     print("You have already sent a request to connect to this student.")
