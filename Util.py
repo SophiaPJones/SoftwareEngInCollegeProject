@@ -3,7 +3,7 @@ import os
 
 MINIMUM_PASSWORD_LENGTH = 8
 MAXIMUM_PASSWORD_LENGTH = 12
-MAXIMUM_USER_COUNT = 5
+MAXIMUM_USER_COUNT = 10
 MAXIMUM_JOB_COUNT = 5
 
 language_list = ["english", "spanish"]
