@@ -56,7 +56,7 @@ def initialize_page_tree(state):
         'Guest Controls': [],  # Temporary
         'Languages': Language(title='Languages', state=state, parent=p, login_required=True)
 
-    }
+    }       
 
     # Replace temporary value for Guest Controls
     state.root.children['InCollege Important Links'].children["Guest Controls"] = (GuestControls(
@@ -90,6 +90,23 @@ def initialize_page_tree(state):
 
     state.root.children["My Account Settings"] = ManageAccount(
         title="ManageAccount", state=state, login_required=True)
+    
+
+    # add one more for searchStudent
+    # that has 3 children, one for each search type
+    # bby last name, by university, by major    
+    state.root.children["Search Students"] = SearchStudents(
+        title="Search Students", state=state, login_required=True)
+
+    state.root.children["Show my network"] = Friends(
+        title="Friends", state=state, login_required=True)
+    
+
+    
+    
+    
+
+
 
     # add one more for searchStudent
     # that has 3 children, one for each search type
@@ -105,7 +122,8 @@ def main():
     state = State()
     state.account_file_name = 'accounts.csv'
     state.job_file_name = 'jobs.csv'
-    state.friend_file_name = "friends.csv"
+    state.friends_file_name = 'friends.csv'
+
     state.load_accounts()
     state.load_success_stories()
     state.load_jobs()
@@ -115,7 +133,10 @@ def main():
         if (state.current_page == None):
             state.current_page = state.root
         state.current_page.onLoad()
+    
+    state.save_accounts()
 
 
 if __name__ == "__main__":
     main()
+

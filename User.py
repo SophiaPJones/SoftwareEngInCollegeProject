@@ -54,7 +54,7 @@ class User:
 
     def change_language(self, new_option):
         if (Util.language_list[new_option]):
-            self.language = new_option
+            self.lanuage = new_option
         else:
             print("Language change failed. Option does not exist")
 

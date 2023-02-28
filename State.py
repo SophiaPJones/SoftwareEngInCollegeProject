@@ -4,7 +4,6 @@ import User
 import Job
 import Util
 
-
 class State:
     def __init__(self):
         self.users = {}
@@ -21,7 +20,7 @@ class State:
     def load_accounts(self):
         try:
             with open(self.account_file_name, encoding="utf8") as csvFile:
-                lines = list(line for line in (l.strip()for l in csvFile) if line)  # skip blank lines
+                lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 accountList = csv.reader(lines, delimiter=',')
                 for account in accountList:
                     self.users[account[2]] = User.User(
@@ -32,15 +31,14 @@ class State:
                         account[5],  # email permission
                         account[6],  # sms permission
                         account[7],  # targeted ad permission
-                        account[8],  # language
-                        account[9],  # major
+                        account[8], # language
+                        account[9], # major
                         account[10], # university
-                        )
+                        )  
                     account[4] = account[4].replace('\u2063', '\n')
                     account[4] = account[4].replace('\u2064', ',')
-                    self.users[account[2]].set_success_story(
-                        account[4])  # success story
-                    self.load_friends()
+                    self.users[account[2]].set_success_story(account[4])  # success story
+            self.load_friends()
         except:
             # No accounts file
             pass
@@ -51,12 +49,15 @@ class State:
                 writer = csv.writer(target)
                 for account in list(self.users.keys()):
                     accountlist = self.users[account].list()
+
                     # replacing newlines and commas with uncommon alternative separator characters
                     accountlist[4] = accountlist[4].replace('\n', '\u2063')
                     accountlist[4] = accountlist[4].replace(',', '\u2064')
+
                     writer.writerow(accountlist)
 
             target.close()
+            self.save_friends()
             return True
         else:
             print("All permitted accounts have been created, please come back later.\n")
@@ -92,12 +93,13 @@ class State:
                 pass
         except:
             return
+        
 
     def load_success_stories(self):
         if self.users != {}:
-            self.success_stories = {key: val.success_story for key,
-                                    val in self.users.items() if val.success_story != ""}
+            self.success_stories = {key: val.success_story for key, val in self.users.items() if val.success_story != ""}
 
+    # friends
     def save_friends(self):
         with open(self.friends_file_name, 'w') as target:
             writer = csv.writer(target)

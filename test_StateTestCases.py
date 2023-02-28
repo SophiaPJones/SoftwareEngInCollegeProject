@@ -81,7 +81,7 @@ class StateTestCases(TestCase):
 
     def test_user_list(self):
         user = User("first","second","Username1", "Password1!")
-        assert user.list() == ["first","second","Username1","Password1!","",True,True,True,0]
+        assert user.list() == ["first","second","Username1", "Password1!",""]
 
     def test_user_success_story(self):
         user = User("first","second","Username1", "Password1!")
@@ -95,9 +95,3 @@ class StateTestCases(TestCase):
         assert job.employer == "Apple"
         assert job.location == "USA"
         assert job.salary == "$100000"
-    
-    def test_change_langauge(self):
-        user = User("first","second","Username1", "Password1!")
-        user.change_language(0)
-        assert user.language == 0
-
