@@ -1010,7 +1010,6 @@ class SearchStudents(Page):
                         "Would you like to send a request to connect to this student? (y/n): ")
                     if send == "y":
                         self.send_request(user.username)
-                    self.input_to_continue()
                     return
             else:
                 print("\nSorry, that student does not exist in our system.")
