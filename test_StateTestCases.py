@@ -47,7 +47,7 @@ class StateTestCases(TestCase):
         assert newState.save_accounts() == True
         os.remove('accountsTest.csv')
 
-    def test_saving_over_five_accounts(self):
+    def test_saving_over_ten_accounts(self):
         newState = State()
         try:
             os.remove('accountsTest.csv')
