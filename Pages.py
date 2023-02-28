@@ -803,9 +803,11 @@ class Language(Page):
 
     def change_language(self):
         new_language = input("\nEnter 0 for English, 1 for Spanish: ")
-        while (new_language == ""):
+        intlang = int(new_language)
+        while (new_language == "" or intlang >= Util.language_list.size() or intlang < 0):
             new_language = input("\nEnter 0 for English, 1 for Spanish: ")
-        self.state.current_user.language = new_language
+            intlang = int(new_language)
+
         if (self.state.save_accounts() == True):
             print("\nLanguage changed Successfully")
             self.input_to_continue()
