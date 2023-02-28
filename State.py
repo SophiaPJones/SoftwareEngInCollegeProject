@@ -64,7 +64,7 @@ class State:
             return False
 
     def save_jobs(self):
-        if len(self.users) <= Util.MAXIMUM_JOB_COUNT:
+        if len(self.users) <= Util.MAXIMUM_JOB_COUNT:  # maybe self.jobs
             with open(self.job_file_name, 'w') as target:
                 writer = csv.writer(target)
                 for job in self.jobs:
@@ -111,7 +111,7 @@ class State:
                 # now go through all the three lists, and add username, the one from the list and status
                 for friends in self.users[user].friends:
                     writer.writerow([username, friends, "friends"])
-                
+
                 for sent in self.users[user].sent_requests:
                     writer.writerow([username, sent, "sent"])
 
@@ -146,4 +146,4 @@ class State:
                         self.users[username].pending_requests.append(friend)
         except:
             return
-        
+

@@ -919,26 +919,25 @@ class SearchStudents(Page):
             "Type your preferred option or enter corresponding number: ")
         selection = "".join(selection.split()).lower()
         if (selection == "last name" or
-            selection == "1" or
-                selection == "1."):
+              selection == "1" or
+              selection == "1."):
             self.search(byName=True)
         elif (selection == "university" or
-            selection == "2" or
-                selection == "2."):
+              selection == "2" or
+              selection == "2."):
             self.search(byUniversity=True)
         elif (selection == "major" or
-            selection == "3" or
-                selection == "3."):
+              selection == "3" or
+              selection == "3."):
             self.search(byMajor=True)
-
         elif (selection == "home" or
-                selection == "0" or
-                selection == "0." or
-                selection == "returnhome" or
-                selection == "return"):
+              selection == "0" or
+              selection == "0." or
+              selection == "returnhome" or
+              selection == "return"):
             self.state.current_page = self.parent
 
-    def search(self, byName = False, byUniversity = False, byMajor = False):
+    def search(self, byName=False, byUniversity=False, byMajor=False):
         # if the user is searching by last name, ask for the last name
         last_name, university, major = None, None, None
         if byName:
@@ -947,7 +946,7 @@ class SearchStudents(Page):
                 print("\nPlease enter a last name.")
                 self.input_to_continue()
                 return
-            
+
         # if the user is searching by university, ask for the university
         elif byUniversity:
             university = input("\nEnter the university of the student you are looking for: ")
@@ -955,7 +954,7 @@ class SearchStudents(Page):
                 print("\nPlease enter a university.")
                 self.input_to_continue()
                 return
-            
+
         # if the user is searching by major, ask for the major
         elif byMajor:
             major = input("\nEnter the major of the student you are looking for: ")
@@ -963,7 +962,7 @@ class SearchStudents(Page):
                 print("\nPlease enter a major.")
                 self.input_to_continue()
                 return
-            
+
         user = self.is_exists(last_name, university, major)
         if user is None:
             print("\nSorry, that student does not exist in our system.1")
@@ -1005,7 +1004,6 @@ class SearchStudents(Page):
                 print("\nSorry, that student does not exist in our system.")
                 self.input_to_continue()
                 return
-        
     def is_exists(self, lastname=None, university=None, major=None):
         if lastname:
             for key in self.state.users:
@@ -1017,20 +1015,19 @@ class SearchStudents(Page):
         elif university:
             for key in self.state.users:
                 user = self.state.users[key]
-                if lastname.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
+                if university.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
                     print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         elif major:
             for key in self.state.users:
                 user = self.state.users[key]
-                if lastname.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
+                if major.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
                     print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         else:
             return None
-    
 
 
     def get_status(self, other_user):
@@ -1045,7 +1042,7 @@ class SearchStudents(Page):
             return "request"
         else:
             return "none"
-    
+
     def send_request(self, other_username):
         # add the current user's username to the student's list of pending requests
         self.state.users[other_username].pending_requests.append(self.state.current_user.username)
@@ -1080,6 +1077,7 @@ class SearchStudents(Page):
         self.input_to_continue()
         return
 
+
     def remove_friend(self, other_user):
         # remove the current user's username from the student's list of friends
         other_user.friends.remove(self.state.current_user.username)
@@ -1089,7 +1087,7 @@ class SearchStudents(Page):
         print("\nYou are no longer connected to this student.")
         self.input_to_continue()
         return
-    
+
     def print_friends(self):
         self.state.current_user = self.state.users[self.state.current_user.username]
         print(f"\nFriends\n{self.split_star}")
@@ -1103,7 +1101,6 @@ class SearchStudents(Page):
             print(f"\t{friend}")
         self.input_to_continue()
         return
-        
     
                   
 
@@ -1217,6 +1214,3 @@ class Friends(Page):
         for friend in self.state.current_user.friends:
             print(f"\t{friend}")
         self.input_to_continue()
-
-
-  

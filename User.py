@@ -23,6 +23,8 @@ class User:
         self.university = university
         pass
 
+
+
     def __string__(self):
         return f"{self.first_name},{self.last_name},{self.username},{self.password},{self.email_notifications},{self.sms},{self.targeted_advertising},{self.language},{self.major},{self.university}"
 
@@ -43,6 +45,12 @@ class User:
 
     def change_target_ad_permission(self, new_option):
         self.targeted_advertising = new_option
+
+    def change_major(self, new_option):
+        self.major = new_option
+
+    def change_university(self, new_option):
+        self.university = new_option
 
     def change_language(self, new_option):
         if (Util.language_list[new_option]):
