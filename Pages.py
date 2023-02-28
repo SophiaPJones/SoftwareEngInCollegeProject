@@ -989,7 +989,6 @@ class SearchStudents(Page):
                         "Would you like to remove this student from your list of friends? (y/n): ")
                     if remove == "y":
                         self.remove_friend(user.username)
-                    self.input_to_continue()
                     return
                 elif status == "pending":
                     print("You have already sent a request to connect to this student.")
@@ -1002,6 +1001,7 @@ class SearchStudents(Page):
                         "Would you like to accept this student's request? (y/n): ")
                     if accept == "y":
                         self.accept_request(user.username)
+                    self.input_to_continue()
                     return
                 else:
                     # ask if the user wants to send a request to connect to the student
@@ -1063,40 +1063,21 @@ class SearchStudents(Page):
         # add the student's username to the current user's list of sent requests
         self.state.current_user.sent_requests.append(other_username)
 
+        self.state.save_friends()
         print("\nRequest sent successfully!")
-        self.input_to_continue()
-        return
-
-    def accept_request(self, other_user):
-        # add to the current user's list of friends
-        self.state.current_user.friends.append(other_user.username)
-        # add to the student's list of friends
-        other_user.friends.append(self.state.current_user.username)
-        # remove the student's username from the current user's list of pending requests
-        self.state.current_user.pending_requests.remove(other_user.username)
-        # remove the current user's username from the student's list of sent requests
-        other_user.sent_requests.remove(self.state.current_user.username)
-
-        print("\nYou are now connected to this student!")
-        self.input_to_continue()
-        return
-
-    def decline_request(self, other_user):
-        # remove the student's username from the current user's list of pending requests
-        self.state.current_user.pending_requests.remove(other_user.username)
-        # remove the current user's username from the student's list of sent requests
-        other_user.sent_requests.remove(self.state.current_user.username)
-
-        print("\nRequest declined.")
         self.input_to_continue()
         return
 
     def remove_friend(self, other_user):
         # remove the current user's username from the student's list of friends
-        other_user.friends.remove(self.state.current_user.username)
+        self.state.users[other_user].friends.remove(
+            self.state.current_user.username)
         # remove the student's username from the current user's list of friends
-        self.state.current_user.friends.remove(other_user.username)
+        self.state.current_user.friends.remove(
+            self.state.users[other_user].username)
         # save the changes to the system
+
+        self.state.save_friends()
         print("\nYou are no longer connected to this student.")
         self.input_to_continue()
         return
@@ -1189,11 +1170,11 @@ class Friends(Page):
                 if (selection2 == "accept" or
                         selection2 == "a"):
                     # accept the request
-                    self.state.accept_request(selection)
+                    self.accept_request(selection)
                 elif (selection2 == "decline" or
                       selection2 == "d"):
                     # decline the request
-                    self.state.decline_request(selection)
+                    self.decline_request(selection)
                 else:
                     print("\nInvalid input.")
                     self.input_to_continue()
@@ -1207,6 +1188,36 @@ class Friends(Page):
             print("\nInvalid input.")
             self.input_to_continue()
         self.input_to_continue()
+
+    def accept_request(self, other_user):
+        # add to the current user's list of friends
+        self.state.current_user.friends.append(other_user)
+        # add to the student's list of friends
+        self.state.users[other_user].friends.append(
+            self.state.current_user.username)
+        # remove the student's username from the current user's list of pending requests
+        self.state.current_user.pending_requests.remove(other_user)
+        # remove the current user's username from the student's list of sent requests
+        self.state.users[other_user].sent_requests.remove(
+            self.state.current_user.username)
+
+        self.state.save_friends()
+        print("\nYou are now connected to this student!")
+        self.input_to_continue()
+        return
+
+    def decline_request(self, other_user):
+        # remove the student's username from the current user's list of pending requests
+        self.state.current_user.pending_requests.remove(
+            self.state.users[other_user].username)
+        # remove the current user's username from the student's list of sent requests
+        self.state.users[other_user].sent_requests.remove(
+            self.state.current_user.username)
+
+        self.state.save_friends()
+        print("\nRequest declined.")
+        self.input_to_continue()
+        return
 
     def view_sent_requests(self):
         print("\nSent Requests:")
