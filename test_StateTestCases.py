@@ -23,6 +23,7 @@ class StateTestCases(TestCase):
             pass
 
         newState.account_file_name = "accountsTest.csv"
+        newState.friends_file_name = 'friendsTest.csv'
         newState.users["UserName1"] = User("first","second","Username1", "Password1!")
         assert newState.save_accounts() == True
         os.remove('accountsTest.csv')
@@ -162,6 +163,7 @@ class StateTestCases(TestCase):
     def test_friend_requests(self):
         self.monkeypatch.setattr('sys.stdin', io.StringIO('\n'))
         newState = State()
+        newState.friends_file_name = 'friendsTest.csv'
         searchPage = SearchStudents(state=newState)
         newState.users["sophie"] = User('Sophia','Jones','sophie','password1',major = 'Computer Science',university='University of South Florida')
         newState.current_user = newState.users["sophie"]

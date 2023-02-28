@@ -27,10 +27,10 @@ def initialize_page_tree(state):
     p.children = {"Post a Job": PostJob(
         title="Post a Job", state=state, parent=p)}
 
-    p = state.root.children['Useful Links']
-
     state.root.children['Useful Links'] = UsefulLinks(
         title="Useful Links", state=state, parent=state.root, login_required=False)
+
+    p = state.root.children['Useful Links']
 
     state.root.children["Useful Links"].children = {
         "General": General(title='General Links', state=state, parent=p, login_required=False),
