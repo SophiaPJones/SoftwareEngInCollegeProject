@@ -323,10 +323,11 @@ class Login(Page):
 
                     # if there is some pending request, show to the user there is a pending request
                     if len(self.state.current_user.pending_requests) != 0:
-                        print("\nYou have a pending request from a user. Please check your pending requests.\n")
+                        print(
+                            "\nYou have a pending request from a user. Please check your pending requests.\n")
                     self.input_to_continue()
 
-                    # 
+                    #
                     self.state.current_page = self.state.current_page = self.state.root
                 else:
                     print("Invalid username/password, please try again")
@@ -374,7 +375,8 @@ class CreateAccount(Page):
                 self.input_to_continue()
                 self.state.current_page = self.state.root
             else:
-                user = User(first_name, last_name, username, password, major=major, university=university)
+                user = User(first_name, last_name, username,
+                            password, major=major, university=university)
                 self.state.users[username] = user
 
                 if (self.state.save_accounts() == True):
@@ -887,15 +889,19 @@ class Developers(Page):
         self.print_menu()
         self.page_select()
 
+
 '''
     Students will be able to search for students in the system by last name, university, or major. When 
     results of these searches are displayed, the student will have the option of sending that student a 
     request to connect.  
 '''
+
+
 class SearchStudents(Page):
     def print_content(self):
         print(f"Search for other students!\n{self.split_star}")
-        print(f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
+        print(
+            f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
 
     def onLoad(self):
         clear_console()
@@ -919,8 +925,8 @@ class SearchStudents(Page):
             "Type your preferred option or enter corresponding number: ")
         selection = "".join(selection.split()).lower()
         if (selection == "last name" or
-              selection == "1" or
-              selection == "1."):
+            selection == "1" or
+                selection == "1."):
             self.search(byName=True)
         elif (selection == "university" or
               selection == "2" or
@@ -941,7 +947,8 @@ class SearchStudents(Page):
         # if the user is searching by last name, ask for the last name
         last_name, university, major = None, None, None
         if byName:
-            last_name = input("\nEnter the last name of the student you are looking for: ")
+            last_name = input(
+                "\nEnter the last name of the student you are looking for: ")
             if last_name == "":
                 print("\nPlease enter a last name.")
                 self.input_to_continue()
@@ -949,7 +956,8 @@ class SearchStudents(Page):
 
         # if the user is searching by university, ask for the university
         elif byUniversity:
-            university = input("\nEnter the university of the student you are looking for: ")
+            university = input(
+                "\nEnter the university of the student you are looking for: ")
             if university == "":
                 print("\nPlease enter a university.")
                 self.input_to_continue()
@@ -957,7 +965,8 @@ class SearchStudents(Page):
 
         # if the user is searching by major, ask for the major
         elif byMajor:
-            major = input("\nEnter the major of the student you are looking for: ")
+            major = input(
+                "\nEnter the major of the student you are looking for: ")
             if major == "":
                 print("\nPlease enter a major.")
                 self.input_to_continue()
@@ -965,18 +974,19 @@ class SearchStudents(Page):
 
         user = self.is_exists(last_name, university, major)
         if user is None:
-            print("\nSorry, that student does not exist in our system.1")
+            print("\nSorry, that student does not exist in our system.")
             self.input_to_continue()
             return
         else:
             # if user is a student and the last name matches the input, display the student's information
-            if last_name == user.last_name.strip().lower() and user.username != self.state.current_user.username:
+            if user.username != self.state.current_user.username:
                 # check status of the current user
                 status = self.get_status(user.username)
                 if status == "friends":
                     print("You are already connected to this student.")
                     # ask if the user wants to remove the student from their list of friends
-                    remove = input("Would you like to remove this student from your list of friends? (y/n): ")
+                    remove = input(
+                        "Would you like to remove this student from your list of friends? (y/n): ")
                     if remove == "y":
                         self.remove_friend(user.username)
                     self.input_to_continue()
@@ -988,47 +998,50 @@ class SearchStudents(Page):
                 elif status == "request":
                     print("This student has sent you a request to connect.")
                     # ask if the user wants to accept the student's request
-                    accept = input("Would you like to accept this student's request? (y/n): ")
+                    accept = input(
+                        "Would you like to accept this student's request? (y/n): ")
                     if accept == "y":
                         self.accept_request(user.username)
-                    self.input_to_continue()
                     return
                 else:
                     # ask if the user wants to send a request to connect to the student
-                    send = input("Would you like to send a request to connect to this student? (y/n): ")
+                    send = input(
+                        "Would you like to send a request to connect to this student? (y/n): ")
                     if send == "y":
                         self.send_request(user.username)
-                    self.input_to_continue()
                     return
             else:
                 print("\nSorry, that student does not exist in our system.")
                 self.input_to_continue()
                 return
+
     def is_exists(self, lastname=None, university=None, major=None):
         if lastname:
             for key in self.state.users:
                 user = self.state.users[key]
                 if lastname.strip().lower() == user.last_name.strip().lower() and user.username != self.state.current_user.username:
-                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    print(
+                        f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         elif university:
             for key in self.state.users:
                 user = self.state.users[key]
                 if university.strip().lower() == user.university.strip().lower() and user.username != self.state.current_user.username:
-                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    print(
+                        f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         elif major:
             for key in self.state.users:
                 user = self.state.users[key]
                 if major.strip().lower() == user.major.strip().lower() and user.username != self.state.current_user.username:
-                    print(f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
+                    print(
+                        f"\n{user.first_name} {user.last_name} is a {user.major} major at {user.university}.")
                     return user
             return None
         else:
             return None
-
 
     def get_status(self, other_user):
         # check if the current user is already friends with the student
@@ -1045,14 +1058,15 @@ class SearchStudents(Page):
 
     def send_request(self, other_username):
         # add the current user's username to the student's list of pending requests
-        self.state.users[other_username].pending_requests.append(self.state.current_user.username)
+        self.state.users[other_username].pending_requests.append(
+            self.state.current_user.username)
         # add the student's username to the current user's list of sent requests
         self.state.current_user.sent_requests.append(other_username)
 
         print("\nRequest sent successfully!")
         self.input_to_continue()
         return
-    
+
     def accept_request(self, other_user):
         # add to the current user's list of friends
         self.state.current_user.friends.append(other_user.username)
@@ -1066,7 +1080,7 @@ class SearchStudents(Page):
         print("\nYou are now connected to this student!")
         self.input_to_continue()
         return
-    
+
     def decline_request(self, other_user):
         # remove the student's username from the current user's list of pending requests
         self.state.current_user.pending_requests.remove(other_user.username)
@@ -1076,7 +1090,6 @@ class SearchStudents(Page):
         print("\nRequest declined.")
         self.input_to_continue()
         return
-
 
     def remove_friend(self, other_user):
         # remove the current user's username from the student's list of friends
@@ -1101,14 +1114,13 @@ class SearchStudents(Page):
             print(f"\t{friend}")
         self.input_to_continue()
         return
-    
-                  
+
 
 class Friends(Page):
     def print_content(self):
         print(f"Friends\n{self.split_star}")
-        print(f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
-
+        print(
+            f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
 
     def onLoad(self):
         clear_console()
@@ -1116,11 +1128,9 @@ class Friends(Page):
         self.menu()
         pass
 
-
     def navigate(self):
         self.print_menu()
         self.page_select()
-
 
     def menu(self):
         self.state.current_user = self.state.users[self.state.current_user.username]
@@ -1141,11 +1151,11 @@ class Friends(Page):
                 selection == "1."):
             self.view_pending_requests()
         elif (selection == "sent requests" or
-            selection == "2" or
+              selection == "2" or
                 selection == "2."):
             self.view_sent_requests()
         elif (selection == "friends" or
-            selection == "3" or
+              selection == "3" or
                 selection == "3."):
             self.view_friends()
         elif (selection == "home" or
@@ -1154,7 +1164,6 @@ class Friends(Page):
                 selection == "returnhome" or
                 selection == "return"):
             self.state.current_page = self.parent
-
 
     def view_pending_requests(self):
         print("\nPending Requests:")
@@ -1178,11 +1187,11 @@ class Friends(Page):
                     "\nWould you like to accept or decline this request? (accept/decline): ")
                 selection2 = "".join(selection2.split()).lower()
                 if (selection2 == "accept" or
-                    selection2 == "a"):
+                        selection2 == "a"):
                     # accept the request
                     self.state.accept_request(selection)
                 elif (selection2 == "decline" or
-                    selection2 == "d"):
+                      selection2 == "d"):
                     # decline the request
                     self.state.decline_request(selection)
                 else:
@@ -1192,13 +1201,12 @@ class Friends(Page):
                 print("\nInvalid input.")
                 self.input_to_continue()
         elif (selection == "no" or
-            selection == "n"):
+              selection == "n"):
             pass
         else:
             print("\nInvalid input.")
             self.input_to_continue()
         self.input_to_continue()
-
 
     def view_sent_requests(self):
         print("\nSent Requests:")
@@ -1206,7 +1214,6 @@ class Friends(Page):
         for request in self.state.current_user.sent_requests:
             print(f"\t{request}")
         self.input_to_continue()
-
 
     def view_friends(self):
         print("\nFriends:")
