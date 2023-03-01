@@ -38,7 +38,7 @@ class State:
                     account[4] = account[4].replace('\u2063', '\n')
                     account[4] = account[4].replace('\u2064', ',')
                     self.users[account[2]].set_success_story(account[4])  # success story
-            self.load_friends()
+            #self.load_friends()
         except:
             # No accounts file
             pass
@@ -57,7 +57,7 @@ class State:
                     writer.writerow(accountlist)
 
             target.close()
-            self.save_friends()
+            #self.save_friends()
             return True
         else:
             print("All permitted accounts have been created, please come back later.\n")
@@ -140,7 +140,6 @@ class State:
                     if status == "friends":
                         self.users[username].friends.append(friend)
                     elif status == "sent":
-                        print("sent")
                         self.users[username].sent_requests.append(friend)
                     elif status == "pending":
                         self.users[username].pending_requests.append(friend)
