@@ -984,11 +984,6 @@ class SearchStudents(Page):
                 status = self.get_status(user.username)
                 if status == "friends":
                     print("You are already connected to this student.")
-                    # ask if the user wants to remove the student from their list of friends
-                    remove = input(
-                        "Would you like to remove this student from your list of friends? (y/n): ")
-                    if remove == "y":
-                        self.remove_friend(user.username)
                     self.input_to_continue()
                     return
                 elif status == "pending":
@@ -997,11 +992,6 @@ class SearchStudents(Page):
                     return
                 elif status == "request":
                     print("This student has sent you a request to connect.")
-                    # ask if the user wants to accept the student's request
-                    accept = input(
-                        "Would you like to accept this student's request? (y/n): ")
-                    if accept == "y":
-                        self.accept_request(user.username)
                     self.input_to_continue()
                     return
                 else:
