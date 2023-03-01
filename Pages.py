@@ -1010,6 +1010,7 @@ class SearchStudents(Page):
                         "Would you like to send a request to connect to this student? (y/n): ")
                     if send == "y":
                         self.send_request(user.username)
+                    self.input_to_continue()
                     return
             else:
                 print("\nSorry, that student does not exist in our system.")
@@ -1066,21 +1067,6 @@ class SearchStudents(Page):
 
         self.state.save_friends()
         print("\nRequest sent successfully!")
-        self.input_to_continue()
-        return
-
-    def remove_friend(self, other_user):
-        # remove the current user's username from the student's list of friends
-        self.state.users[other_user].friends.remove(
-            self.state.current_user.username)
-        # remove the student's username from the current user's list of friends
-        self.state.current_user.friends.remove(
-            self.state.users[other_user].username)
-        # save the changes to the system
-
-        self.state.save_friends()
-        print("\nYou are no longer connected to this student.")
-        self.input_to_continue()
         return
 
     def print_friends(self):
@@ -1178,16 +1164,13 @@ class Friends(Page):
                     self.decline_request(selection)
                 else:
                     print("\nInvalid input.")
-                    self.input_to_continue()
             else:
                 print("\nInvalid input.")
-                self.input_to_continue()
         elif (selection == "no" or
               selection == "n"):
             pass
         else:
             print("\nInvalid input.")
-            self.input_to_continue()
         self.input_to_continue()
 
     def accept_request(self, other_user):
@@ -1204,7 +1187,6 @@ class Friends(Page):
 
         self.state.save_friends()
         print("\nYou are now connected to this student!")
-        self.input_to_continue()
         return
 
     def decline_request(self, other_user):
@@ -1217,7 +1199,6 @@ class Friends(Page):
 
         self.state.save_friends()
         print("\nRequest declined.")
-        self.input_to_continue()
         return
 
     def view_sent_requests(self):
@@ -1227,9 +1208,30 @@ class Friends(Page):
             print(f"\t{request}")
         self.input_to_continue()
 
+    def remove_friend(self, other_user):
+        # remove the current user's username from the student's list of friends
+        self.state.users[other_user].friends.remove(
+            self.state.current_user.username)
+        # remove the student's username from the current user's list of friends
+        self.state.current_user.friends.remove(
+            self.state.users[other_user].username)
+        # save the changes to the system
+
+        self.state.save_friends()
+        print("\nYou are no longer connected to this student.")
+        return
+
     def view_friends(self):
         print("\nFriends:")
         # display the current user's friends
         for friend in self.state.current_user.friends:
             print(f"\t{friend}")
+
+        remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
+        if(remove_friendq == "y" or remove_friendq == "yes"):
+            friend_to_remove = input("Type the username of the connection you wish to remove (Usernames are case sensitive): ")
+            if(friend_to_remove in self.state.current_user.friends):
+                self.remove_friend(friend_to_remove)
+            else:
+                input("You are not friends with that user!")
         self.input_to_continue()

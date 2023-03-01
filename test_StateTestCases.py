@@ -2,7 +2,7 @@ from unittest import TestCase
 import pytest
 from os import *
 import io
-from Pages import SearchStudents
+from Pages import *
 from State import *
 from User import *
 from Util import *
@@ -165,6 +165,7 @@ class StateTestCases(TestCase):
         newState = State()
         newState.friends_file_name = 'friendsTest.csv'
         searchPage = SearchStudents(state=newState)
+        friendsPage = Friends(state=newState)
         newState.users["sophie"] = User('Sophia','Jones','sophie','password1',major = 'Computer Science',university='University of South Florida')
         newState.current_user = newState.users["sophie"]
         newState.users["dinkster"] = User('John','Dinkleburg','dinkster','password2',major = 'Interpretive Dance',university='University of Central Florida')
@@ -173,3 +174,27 @@ class StateTestCases(TestCase):
         #test that both users have the pending requests.
         assert newState.users["dinkster"].username in newState.current_user.sent_requests
         assert newState.current_user.username in newState.users["dinkster"].pending_requests
+
+        #test accept_friend_request
+        newState.current_user = newState.users["dinkster"]
+        friendsPage.accept_request("sophie")
+        output = self.capsys.readouterr()
+        assert "sophie" in newState.current_user.friends
+        assert "dinkster" in newState.users["sophie"].friends
+
+        #test remove_friend
+        friendsPage.remove_friend("sophie")
+        output = self.capsys.readouterr()
+        assert not ("sophie" in newState.current_user.friends)
+        assert not ("dinkster" in newState.users["sophie"].friends)
+
+        #test decline request
+        searchPage.send_request(newState.users["sophie"].username)
+
+        newState.current_user = newState.users["sophie"]
+        friendsPage.decline_request("dinkster")
+        output = self.capsys.readouterr()
+        assert not ("dinkster" in newState.current_user.friends)
+        assert not ("sophie" in newState.users["dinkster"].friends)
+        assert not (newState.users["dinkster"].username in newState.current_user.sent_requests)
+        assert not (newState.current_user.username in newState.users["dinkster"].pending_requests)
