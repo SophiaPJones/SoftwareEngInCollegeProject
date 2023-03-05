@@ -34,10 +34,18 @@ class State:
                         account[8], # language
                         account[9], # major
                         account[10], # university
-                        )  
-                    account[4] = account[4].replace('\u2063', '\n')
-                    account[4] = account[4].replace('\u2064', ',')
-                    self.users[account[2]].set_success_story(account[4])  # success story
+                        account[11], #title
+                        account[15], #uni start year
+                        account[16]) #Uni end year
+                    for i, item in enumerate(account):
+                        if(isinstance(account,str)):
+                            item.replace(Util.REPLACE_NEWLINE_CHAR, "\n")
+                            item.replace(Util.REPLACE_COMMA_CHAR,",")
+                            if(i == 4): self.users[account[2]].success_story = item
+                            elif(i == 12): self.users[account[2]].about = item
+                            elif(i == 13): self.users[account[2]].experience = item
+                            elif(i == 14): self.users[account[2]].education = item
+
             #self.load_friends()
         except:
             # No accounts file
@@ -51,9 +59,10 @@ class State:
                     accountlist = self.users[account].list()
 
                     # replacing newlines and commas with uncommon alternative separator characters
-                    accountlist[4] = accountlist[4].replace('\n', '\u2063')
-                    accountlist[4] = accountlist[4].replace(',', '\u2064')
-
+                    for i, item in enumerate(accountlist):
+                        if(isinstance(item,str)):
+                            accountlist[i] = item.replace('\n', Util.REPLACE_NEWLINE_CHAR)
+                            accountlist[i] = item.replace(',', Util.REPLACE_COMMA_CHAR)
                     writer.writerow(accountlist)
 
             target.close()

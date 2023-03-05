@@ -111,27 +111,17 @@ class Home(Page):
             print(f"Hear one of our user's success stories!: \n\t\t'inCollege helped me get the skills I needed to succeed,\n\t\tand set me up with a network of contacts that helped\n\t\tme find a great job!' -- Sylvia K.")
 
 
-class ManageAccount(Page):
+class ChangeProfileName(Page):
     def onLoad(self):
         clear_console()
         self.print_content()
         self.menu()
-
-    def print_content(self):
-        print(f"Manage your InCollege Account!\n{self.split_star}")
-        print(
-            f"\tUsername: {self.state.current_user.username}\n{self.split_tilde}")
-
     def menu(self):
-        print("Select an option to change on your account or return home:\n")
         print(f"\t0. Return Home")
         print(
             f"\t1. Update First Name (Currently: {self.state.current_user.first_name})")
         print(
             f"\t2. Update Last Name (Currently: {self.state.current_user.last_name})")
-        print(f"\t3. Update Password")
-        print(
-            f"\t4. Add your success story!\nCurrently your success story is: {self.state.current_user.success_story}")
         selection = input(
             "Type your preferred option or enter corresponding number: ")
         selection = "".join(selection.split()).lower()
@@ -147,28 +137,14 @@ class ManageAccount(Page):
               selection == "2" or
               selection == "2."):
             self.change_last_name()
-        elif (selection == "updatepassword" or
-              selection == "password" or
-              selection == "3" or
-              selection == "3."):
-            self.change_password()
-        elif (selection == "addyoursuccessstory" or
-              selection == "addsuccessstory" or
-              selection == "successstory" or
-              selection == "success" or
-              selection == "story" or
-              selection == "mysuccessstory" or
-              selection == "addmysuccessstory" or
-              selection == "4." or
-              selection == "4"):
-            self.change_success_story()
         elif (selection == "home" or
               selection == "0" or
               selection == "0." or
               selection == "returnhome" or
               selection == "return"):
             self.state.current_page = self.parent
-
+    def print_content(self):
+        print("Currently, your first name ")
     def change_first_name(self):
         new_first_name = input("\nEnter new first name: ")
         while (new_first_name == ""):
@@ -187,22 +163,42 @@ class ManageAccount(Page):
             print("\nLast name changed Successfully")
             self.input_to_continue()
 
+
+class ChangePassword(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.change_password()
+    def print_content():
+        print("Enter a new password here or type nothing to cancel and return to the previous page.\n")
+        print(f"{self.split_star}")
     def change_password(self):
         new_password = input("\nEnter new password: ")
         passwordValid = Util.validate_password(new_password)
         while (not passwordValid):
+            if(new_password == ""):
+                self.state.current_page = self.parent
+                return
             print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.\n")
             new_password = input("\nEnter new password: ")
             passwordValid = Util.validate_password(new_password)
-        if passwordValid:
-            self.state.current_user.password = new_password
-            if (self.state.save_accounts() == True):
-                print("\nPassword changed Successfully")
-                self.input_to_continue()
+        self.state.current_user.password = new_password
         if (self.state.save_accounts() == True):
             print("\nPassword changed Successfully")
             self.input_to_continue()
 
+
+class ChangeSuccessStory(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.change_success_story()
+        self.current_page = self.parent
+    def print_content(self):
+        print("Change your Success Story here!\n")
+        success_story_display = self.change_success_story.replace('\n','\n\t')
+        print(f"Currently, your success story is: \n{success_story_display}")
+        print(f"{self.split_star}")
     def change_success_story(self):
         new_success_story = ""
         user_story_in = input(
@@ -216,6 +212,121 @@ class ManageAccount(Page):
             self.input_to_continue()
         self.state.load_success_stories()
 
+class ChangeEducationInfo(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.menu()
+        self.current_page = self.parent
+    def print_content(self):
+        print("Change your Education information here!\n")
+        print("Currently, your information is:")
+        print(f"\tUniversity Name: {self.state.current_user.university}")
+        print(f"\tDegree: {self.state.current_user.major}")
+        print(f"\tAttended from {self.state.current_user.university_start_year} to {self.state.current_user.university_end_year}")
+        print(f"{self.split_star}")
+    def menu(self):
+        print("\t> 0. Return To Profile Management")
+        print("\t> 1. Update University Name")
+        print("\t> 2. Update Degree")
+        print("\t> 3. Update Start Year")
+        print("\t> 4. Update End Year\n")
+
+        selection = input("Enter the number corresponding to your option: ")
+        selection = "".join(selection.split()).lower()
+        if(selection == "updateuniversityname" or
+           selection == "universityname" or
+           selection =="university" or
+           selection == "1" or
+           selection == "1."):
+            self.change_university_name()
+        elif(selection == "updatedegree" or
+           selection =="degree" or
+           selection == "2" or
+           selection == "2."):
+            self.change_degree()
+        elif(selection == "updatestartyear" or
+           selection =="startyear" or
+           selection == "start" or
+           selection == "3" or
+           selection == "3."):
+            self.update_start_year()
+        elif(selection == "updateendyear" or
+           selection =="endyear" or
+           selection == "end" or
+           selection == "4" or
+           selection == "4."):
+            self.update_end_year()
+        elif(selection == "returntoprofilemanagement" or
+           selection =="return" or
+           selection == "profile" or
+           selection == "profilemanagement" or
+           selection == "0" or
+           selection == "0."):
+            self.state.current_page = self.parent
+        else:
+            print("Invalid selection!")
+            self.input_to_continue()
+            return
+    def change_university_name(self):
+        clear_console()
+        print(f"University name is currently: {self.state.current_user.university}")
+        new_university = input("Enter a new university name or nothing to cancel and return: ")
+        if(new_university == ""): return
+        else:
+            self.state.current_user.university = new_university
+        if (self.state.save_accounts() == True):
+            print("\nUniversity story changed Successfully")
+            self.input_to_continue()
+    def change_degree(self):
+        clear_console()
+        print(f"Degree is currently: {self.state.current_user.major}")
+        new_degree = input("Enter a new degree name or nothing to cancel and return: ")
+        if(new_degree == ""): return
+        else:
+            self.state.current_user.degree = new_degree
+        if (self.state.save_accounts() == True):
+            print("\nDegree changed Successfully")
+            self.input_to_continue()
+    def update_start_year(self):
+        clear_console()
+        print(f"University start year is currently: {self.state.current_user.university_start_year}")
+        new_university_start_year = input("Enter a new university start year or nothing to cancel and return: ")
+        if(new_university_start_year == ""): return
+        else:
+            self.state.current_user.university_start_year = new_university_start_year
+        if (self.state.save_accounts() == True):
+            print("\nStart changed Successfully")
+            self.input_to_continue()
+    def update_end_year(self):
+        clear_console()
+        print(f"University end year is currently: {self.state.current_user.university_end_year}")
+        new_university_end_year = input("Enter a new university end year or nothing to cancel and return: ")
+        if(new_university_end_year == ""): return
+        else:
+            self.state.current_user.university_end_year = new_university_end_year
+        if (self.state.save_accounts() == True):
+            print("\nEnd year changed Successfully")
+            self.input_to_continue()
+
+class ManageProfile(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.print_menu()
+        self.page_select()
+
+    def print_content(self):
+        print(f"Manage your InCollege Profile!\n{self.split_star}")
+        print(f"Currently, your profile has the following information:\n")
+        print(f"\tFirst Name: {self.state.current_user.first_name}")
+        print(f"\tLast Name: {self.state.current_user.last_name}")
+        print(f"\tTitle: {self.state.current_user.title}")
+        print("\tEducation:")
+        print(f"\t\tUniversity: {self.state.current_user.university}")
+        print(f"\t\tMajor/Degree: {self.state.current_user.major}")
+        print(f"\t\tUniversity Start Year: {self.state.current_user.university_start_year}")
+        print(f"\t\tUniversity End Year: {self.state.current_user.university_end_year}")
 
 class PostJob(Page):
     def onLoad(self):
