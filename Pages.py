@@ -193,10 +193,10 @@ class ChangeSuccessStory(Page):
         clear_console()
         self.print_content()
         self.change_success_story()
-        self.current_page = self.parent
+        self.state.current_page = self.parent
     def print_content(self):
         print("Change your Success Story here!\n")
-        success_story_display = self.change_success_story.replace('\n','\n\t')
+        success_story_display = "\t" + self.state.current_user.success_story.replace('\n','\n\t')
         print(f"Currently, your success story is: \n{success_story_display}")
         print(f"{self.split_star}")
     def change_success_story(self):
