@@ -2,8 +2,8 @@
 import Util
 
 class JobExperience:
-    def __init__(self, user, title, employer, date_started, date_ended, location, description):
-        self.user = user
+    def __init__(self, username, title, employer, date_started, date_ended, location, description):
+        self.username = username
         self.title = title
         self.employer = employer
         self.date_started = date_started
@@ -11,26 +11,31 @@ class JobExperience:
         self.location = location
         self.description = description
     def __str__(self):
-        return f"{self.user.username},{self.title},{self.employer},{self.date_started},{self.date_ended},{self.location},{self.description}"
+        return f"{self.username},{self.title},{self.employer},{self.date_started},{self.date_ended},{self.location},{self.description}"
     def list(self):
-        return[self.user, self.title, self.employer, self.date_started, self.date_ended, self.location, self.description]
+        return[self.username, self.title, self.employer, self.date_started, self.date_ended, self.location, self.description]
 
 class User:
-    def __init__(self, first_name, last_name, username, password, email_notifications=True, sms=True, targeted_advertising=True, language=0, major="", university="", title="", university_start_year = "", university_end_year = ""):
+    def __init__(self, first_name, last_name, username,
+                 password, success_story="", email_notifications=True, sms=True,
+                 targeted_advertising=True, language=0,
+                 major="", university="", title="",
+                 about="",experience="",education="",
+                 university_start_year = "", university_end_year = ""):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
         self.password = password
-        self.success_story = ""
+        self.success_story = success_story
         self.email_notifications = email_notifications
         self.sms = sms
         self.targeted_advertising = targeted_advertising
         self.language = language
         self.title = title
-        self.about = ""
-        self.experience = ""
-        self.education = ""
-        self.previousJobs = []
+        self.about = about
+        self.experience = experience
+        self.education = education
+        self.previous_jobs = []
         '''
         Every student will have a list of friends on InCollege that they have connected with. Initially this list will 
         be empty.'''
@@ -52,7 +57,12 @@ class User:
         self.password = new_password
 
     def list(self):
-        return [self.first_name, self.last_name, self.username, self.password, self.success_story, self.email_notifications, self.sms, self.targeted_advertising, self.language, self.major, self.university, self.title, self.about, self.experience, self.education,self.university_start_year,self.university_end_year]
+        return [self.first_name, self.last_name, self.username,
+                self.password, self.success_story, self.email_notifications,
+                self.sms, self.targeted_advertising, self.language,
+                self.major, self.university, self.title,
+                self.about, self.experience, self.education,
+                self.university_start_year,self.university_end_year]
 
     def set_success_story(self, success_story):
         self.success_story = success_story
