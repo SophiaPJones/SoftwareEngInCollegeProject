@@ -5,6 +5,7 @@ import Job
 import Util
 from typing import Any
 
+
 class State:
     def __init__(self):
         self.users = {}
@@ -21,18 +22,20 @@ class State:
 
     def load_accounts(self):
         try:
-            #import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             with open(self.account_file_name, encoding="utf8") as csvFile:
-                #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
-                accountList : Any = csv.reader(csvFile, delimiter=',')
+                # lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
+                accountList: Any = csv.reader(csvFile, delimiter=',')
                 for account in accountList:
-                    if account == []: continue
+                    if account == []:
+                        continue
                     account[5] = account[5] == "True"
                     account[6] = account[6] == "True"
                     account[7] = account[7] == "True"
                     account[8] = account[8] == "True"
-                    self.users[account[2]] = User.User(*account) #Uni end year
-            #self.load_friends()
+                    self.users[account[2]] = User.User(
+                        *account)  # Uni end year
+            # self.load_friends()
             return True
         except:
             # No accounts file
@@ -55,7 +58,7 @@ class State:
                     #         print(accountlist[i])
                     writer.writerow(accountlist)
             target.close()
-            #self.save_friends()
+            # self.save_friends()
             return True
         else:
             print("All permitted accounts have been created, please come back later.\n")
@@ -89,11 +92,11 @@ class State:
                 return True
         except:
             return False
-        
 
     def load_success_stories(self):
         if self.users != {}:
-            self.success_stories = {key: val.success_story for key, val in self.users.items() if val.success_story != ""}
+            self.success_stories = {key: val.success_story for key,
+                                    val in self.users.items() if val.success_story != ""}
 
     # friends
     def save_friends(self):
@@ -120,7 +123,7 @@ class State:
         try:
             # open the file
             with open(self.friends_file_name, 'r') as csvFile:
-                #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
+                # lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 friend_list = csv.reader(lines, delimiter=',')
                 for friend_ in friend_list:
                     # get the username
@@ -145,18 +148,21 @@ class State:
 
     def load_experience(self):
         try:
-            #import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             with open(self.experience_file_name, 'r') as csvFile:
                 experiences = csv.reader(csvFile, delimiter=',')
                 for exp in experiences:
                     username = exp[0]
                     if username in self.users:
-                        self.users[username].previous_jobs.append(User.JobExperience(username, exp[1], exp[2], exp[3], exp[4],exp[5],exp[6]))
+                        self.users[username].previous_jobs.append(User.JobExperience(
+                            username, exp[1], exp[2], exp[3], exp[4], exp[5], exp[6]))
                     else:
-                        raise Exception("Invalid user in job experience; make sure accounts have already been loaded.")
+                        raise Exception(
+                            "Invalid user in job experience; make sure accounts have already been loaded.")
                 return True
         except:
             return False
+
     def save_experience(self):
         try:
             with open(self.experience_file_name, 'w+') as csvFile:

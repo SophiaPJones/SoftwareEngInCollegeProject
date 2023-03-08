@@ -1,4 +1,3 @@
 __pycache__
-accounts.csv
+*.csv
 .idea
-friends.csv
