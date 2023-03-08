@@ -93,6 +93,7 @@ def initialize_page_tree(state):
     p = state.root.children["Manage Profile"]
     p.children = {"Change Profile Name": ChangeProfileName(title = 'Change Profile Name', state=state, parent=p, login_required = True),
                   "Change Password": ChangePassword(title="Change Password", state=state,parent=p,login_required=True),
+                  "Change Title": ChangeTitle(title="Change Title", state=state, parent=p, login_required = True),
                   "Change Success Story": ChangeSuccessStory(title="Change Success Story", state=state, parent=p, login_required=True),
                   "Change Education Information": ChangeEducationInfo(title="Change Education Info", state=state, parent=p, login_required=True),
                   "Change About Me": ChangeAboutMe(title="Change About Me", state=state, parent=p, login_required=True),

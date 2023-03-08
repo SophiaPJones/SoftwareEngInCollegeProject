@@ -77,7 +77,7 @@ class Page:
             print("\nInvalid page selection! Please try again.\n")
             self.input_to_continue()
             clear_console()
-            self.navigate()
+            if hasattr(self, 'navigate') and callable(getattr(self, 'navigate')): self.navigate()
 
     def input_to_continue(self):
         input(
@@ -169,7 +169,7 @@ class ChangePassword(Page):
         clear_console()
         self.print_content()
         self.change_password()
-    def print_content():
+    def print_content(self):
         print("Enter a new password here or type nothing to cancel and return to the previous page.\n")
         print(f"{self.split_star}")
     def change_password(self):
@@ -187,6 +187,24 @@ class ChangePassword(Page):
             print("\nPassword changed Successfully")
             self.input_to_continue()
 
+class ChangeTitle(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.change_title()
+    def print_content(self):
+        print(f"Enter a new title here (currently: {self.state.current_user.title}) or type nothing to cancel.\n")
+        print(f"{self.split_star}")
+    def change_title(self):
+        new_title = input("\nEnter new title: ")
+        if(new_title == ""):
+            self.state.current_page = self.parent
+            return
+        self.state.current_user.title = new_title
+        if (self.state.save_accounts() == True):
+            print("\nTitle changed Successfully")
+            self.state.current_page = self.parent
+            self.input_to_continue()
 
 class ChangeSuccessStory(Page):
     def onLoad(self):
