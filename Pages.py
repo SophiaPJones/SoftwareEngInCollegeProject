@@ -333,7 +333,8 @@ class ChangeEducationInfo(Page):
         new_university = input("Enter a new university name or nothing to cancel and return: ")
         if(new_university == ""): return
         else:
-            self.state.current_user.university = new_university
+
+            self.state.current_user.university = Util.format_words(new_university)
         if (self.state.save_accounts() == True):
             print("\nUniversity story changed Successfully")
             self.input_to_continue()
@@ -343,7 +344,8 @@ class ChangeEducationInfo(Page):
         new_degree = input("Enter a new degree name or nothing to cancel and return: ")
         if(new_degree == ""): return
         else:
-            self.state.current_user.degree = new_degree
+            self.state.current_user.degree = Util.format_words(new_degree)
+
         if (self.state.save_accounts() == True):
             print("\nDegree changed Successfully")
             self.input_to_continue()
@@ -682,8 +684,10 @@ class CreateAccount(Page):
             self.input_to_continue()
 
         # also ask for major and university
-        major = input("Enter your major: ")
-        university = input("Enter your university: ")
+        not_major = input("Enter your major: ")
+        major = Util.format_words(not_major)
+        not_university = input("Enter your university: ")
+        university = Util.format_words(not_university)
 
         password = input("Enter the new account's password: ")
         passwordValid = Util.validate_password(password)
@@ -1535,6 +1539,12 @@ class Friends(Page):
         # display the current user's friends
         for friend in self.state.current_user.friends:
             print(f"\t{friend}")
+            decision = input("View Friend Profile? (y/n)")
+            if (decision == "y" or decision == "yes"):
+                friend_profile = input("Type the username of the friend's porifle you wish to view): ")
+                if (friend_profile in self.state.current_user.friends):
+                    self.view_friend_profile(friend_profile)                
+
 
         remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
         if(remove_friendq == "y" or remove_friendq == "yes"):
@@ -1543,4 +1553,33 @@ class Friends(Page):
                 self.remove_friend(friend_to_remove)
             else:
                 input("You are not friends with that user!")
+
+        self.input_to_continue()
+    
+    def view_friend_profile(self, other_user):
+        print(f"\tFirst Name: {self.state.users[other_user].first_name}")
+        print(f"\tLast Name: {self.state.users[other_user].last_name}")
+        print(f"\tTitle: {self.state.users[other_user].title}")
+        about_display = "\t\t" + self.state.users[other_user].about.replace('\n','\n\t\t')
+        print(f"\tAbout: \n{about_display}")
+        print(f"\tSummary of their work experience is:")
+        experience_display = "\t\t" + self.state.users[other_user].experience.replace('\n','\n\t\t')
+        print(experience_display)
+        print("\tEducation:")
+        print(f"\t\tUniversity: {self.state.users[other_user].university}")
+        print(f"\t\tMajor/Degree: {self.state.users[other_user].major}")
+        print(f"\t\tUniversity Start Year: {self.state.users[other_user].university_start_year}")
+        print(f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
+
+        print("\tExperience History:")
+        num_jobs = len(self.state.users[other_user].previous_jobs)
+        for i in range(0, num_jobs):
+            print(f"\t\tJob {i+1}:")
+            print(f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
+            print(f"\t\t\tEmployer: {self.state.users[other_user].previous_jobs[i].employer}")
+            print(f"\t\t\tDate Started: {self.state.users[other_user].previous_jobs[i].date_started}")
+            print(f"\t\t\tDate Ended: {self.state.users[other_user].previous_jobs[i].date_ended}")
+            print(f"\t\t\tLocation: {self.state.users[other_user].previous_jobs[i].location}")
+            print(f"\t\t\tDescription: {self.state.users[other_user].previous_jobs[i].description}")
+        
         self.input_to_continue()
