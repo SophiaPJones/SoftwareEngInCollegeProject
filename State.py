@@ -3,6 +3,7 @@ import csv
 import User
 import Job
 import Util
+from typing import Any
 
 class State:
     def __init__(self):
@@ -10,6 +11,7 @@ class State:
         self.account_file_name = ''
         self.job_file_name = ''
         self.friends_file_name = ''
+        self.experience_file_name = ''
         self.current_user = None
         self.application_active = True
         self.current_page = None
@@ -20,27 +22,19 @@ class State:
     def load_accounts(self):
         try:
             with open(self.account_file_name, encoding="utf8") as csvFile:
-                lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
-                accountList = csv.reader(lines, delimiter=',')
+                #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
+                accountList : Any = csv.reader(csvFile, delimiter=',')
                 for account in accountList:
-                    self.users[account[2]] = User.User(
-                        account[0],  # first name
-                        account[1],  # last name
-                        account[2],  # username
-                        account[3],  # password
-                        account[5],  # email permission
-                        account[6],  # sms permission
-                        account[7],  # targeted ad permission
-                        account[8], # language
-                        account[9], # major
-                        account[10], # university
-                        )  
-                    account[4] = account[4].replace('\u2063', '\n')
-                    account[4] = account[4].replace('\u2064', ',')
-                    self.users[account[2]].set_success_story(account[4])  # success story
-            self.load_friends()
+                    account[5] = account[5] == "True"
+                    account[6] = account[6] == "True"
+                    account[7] = account[7] == "True"
+                    account[8] = account[8] == "True"
+                    self.users[account[2]] = User.User(*account) #Uni end year
+            #self.load_friends()
+            return True
         except:
             # No accounts file
+            return False
             pass
 
     def save_accounts(self):
@@ -51,13 +45,17 @@ class State:
                     accountlist = self.users[account].list()
 
                     # replacing newlines and commas with uncommon alternative separator characters
-                    accountlist[4] = accountlist[4].replace('\n', '\u2063')
-                    accountlist[4] = accountlist[4].replace(',', '\u2064')
-
+                    # for i, item in enumerate(accountlist):
+                    #     if(isinstance(item,str)):
+                    #         print(item)
+                    #         accountlist[i] = item.replace('\n', Util.REPLACE_NEWLINE_CHAR)
+                    #         accountlist[i] = item.replace(',', Util.REPLACE_COMMA_CHAR)
+                    #         print("*****")
+                    #         print(accountlist[i])
                     writer.writerow(accountlist)
 
             target.close()
-            self.save_friends()
+            #self.save_friends()
             return True
         else:
             print("All permitted accounts have been created, please come back later.\n")
@@ -79,8 +77,6 @@ class State:
     def load_jobs(self):
         try:
             with open(self.job_file_name) as csvFile:
-                lines = list(line for line in (l.strip()
-                             for l in csvFile) if line)  # skip blank lines
                 job_list = csv.reader(lines, delimiter=',')
                 for job in job_list:
                     self.jobs.append(Job.Job(
@@ -90,9 +86,9 @@ class State:
                         job[3],  # location
                         job[4]  # salary
                     ))
-                pass
+                return True
         except:
-            return
+            return False
         
 
     def load_success_stories(self):
@@ -101,7 +97,7 @@ class State:
 
     # friends
     def save_friends(self):
-        with open(self.friends_file_name, 'w') as target:
+        with open(self.friends_file_name, 'w+') as target:
             writer = csv.writer(target)
             # user user2 status <pending, sent, friends>
             for user in self.users:
@@ -124,7 +120,7 @@ class State:
         try:
             # open the file
             with open(self.friends_file_name, 'r') as csvFile:
-                lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
+                #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 friend_list = csv.reader(lines, delimiter=',')
                 for friend_ in friend_list:
                     # get the username
@@ -140,10 +136,35 @@ class State:
                     if status == "friends":
                         self.users[username].friends.append(friend)
                     elif status == "sent":
-                        print("sent")
                         self.users[username].sent_requests.append(friend)
                     elif status == "pending":
                         self.users[username].pending_requests.append(friend)
+                return True
         except:
-            return
+            return False
 
+    def load_experience(self):
+        try:
+            #import pdb; pdb.set_trace()
+            with open(self.experience_file_name, 'r') as csvFile:
+                experiences = csv.reader(csvFile, delimiter=',')
+                for exp in experiences:
+                    username = exp[0]
+                    if username in self.users:
+                        self.users[username].previous_jobs.append(User.JobExperience(username, exp[1], exp[2], exp[3], exp[4],exp[5],exp[6]))
+                    else:
+                        raise Exception("Invalid user in job experience; make sure accounts have already been loaded.")
+                return True
+        except:
+            return False
+    def save_experience(self):
+        try:
+            with open(self.experience_file_name, 'w+') as csvFile:
+                experiences = csv.writer(csvFile, delimiter=',')
+                for user in self.users:
+                    for job in self.users[user].previous_jobs:
+                        experiences.writerow(job.list())
+
+            return True
+        except:
+            return False

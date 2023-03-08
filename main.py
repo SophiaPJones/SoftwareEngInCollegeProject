@@ -88,9 +88,16 @@ def initialize_page_tree(state):
                                                         "Learn How to Interview": LearnInterviews(title="Learn How to Interview", state=state, parent=p),
                                                         "Learn Penetration Testing": LearnPenetrationTesting(title="Learn Penetration Test", state=state, parent=p)}
 
-    state.root.children["My Account Settings"] = ManageAccount(
-        title="ManageAccount", state=state, login_required=True)
-    
+    state.root.children["Manage Profile"] = ManageProfile(
+        title="Manage Profile", state=state, login_required=True)
+    p = state.root.children["Manage Profile"]
+    p.children = {"Change Profile Name": ChangeProfileName(title = 'Change Profile Name', state=state, parent=p, login_required = True),
+                  "Change Password": ChangePassword(title="Change Password", state=state,parent=p,login_required=True),
+                  "Change Success Story": ChangeSuccessStory(title="Change Success Story", state=state, parent=p, login_required=True),
+                  "Change Education Information": ChangeEducationInfo(title="Change Education Info", state=state, parent=p, login_required=True),
+                  "Change About Me": ChangeAboutMe(title="Change About Me", state=state, parent=p, login_required=True),
+                  "Change Experience Summary": ChangeExperienceSummary(title="Change Experience Summary", state=state, parent=p, login_required=True),
+                  "Change Experience History": ChangeExperienceInfo(title="Change Experience History", state=state, parent=p, login_required = True)}
 
     # add one more for searchStudent
     # that has 3 children, one for each search type
@@ -123,11 +130,13 @@ def main():
     state.account_file_name = 'accounts.csv'
     state.job_file_name = 'jobs.csv'
     state.friends_file_name = 'friends.csv'
+    state.experience_file_name = 'experience.csv'
 
     state.load_accounts()
     state.load_success_stories()
     state.load_jobs()
     state.load_friends()
+    state.load_experience()
     initialize_page_tree(state)
     while (state.application_active):
         if (state.current_page == None):

@@ -6,7 +6,9 @@ MAXIMUM_PASSWORD_LENGTH = 12
 MAXIMUM_USER_COUNT = 10
 MAXIMUM_JOB_COUNT = 5
 MAXIMUM_FRIEND_COUNT = 10
-
+REPLACE_NEWLINE_CHAR = '\u2063'
+REPLACE_COMMA_CHAR = '\u2064'
+MAXIMUM_EXPERIENCE_COUNT = 3
 language_list = ["english", "spanish"]
 
 
@@ -33,3 +35,6 @@ def clear_console():
         os.system('cls')
     else:
         os.system('clear')
+
+def format_words(string):
+    return string.title()
