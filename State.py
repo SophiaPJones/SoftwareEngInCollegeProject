@@ -21,7 +21,7 @@ class State:
 
     def load_accounts(self):
         try:
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             with open(self.account_file_name, encoding="utf8") as csvFile:
                 #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 accountList : Any = csv.reader(csvFile, delimiter=',')
