@@ -228,3 +228,29 @@ class StateTestCases(TestCase):
             newState.users["dinkster"].username in newState.current_user.sent_requests)
         assert not (
             newState.current_user.username in newState.users["dinkster"].pending_requests)
+
+    def test_job_experience(self):
+        job = Job("Product Dev. Intern", "Make stuff",
+                  "Starbucks", "Florida", 60000)
+        assert job.title == "Product Dev. Intern"
+        assert job.description == "Make stuff"
+        assert job.employer == "Starbucks"
+        assert job.location == "Florida"
+        assert job.salary == 60000
+
+    def test_user_list(self):
+        user = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                    "Student", "This is the about", "This is the experience", "This is the Education", "2020", "2024")
+        assert user.first_name == "Ty"
+        assert user.last_name == "Piesco"
+        assert user.username == "typies"
+        assert user.password == "Password1!"
+        assert user.success_story == "I am big success"
+        assert user.major == "Computer Science"  # Checks formatting
+        assert user.university == "University Of South Florida"  # Checks formatting
+        assert user.title == "Student"
+        assert user.about == "This is the about"
+        assert user.experience == "This is the experience"
+        assert user.education == "This is the Education"
+        assert user.university_start_year == "2020"
+        assert user.university_end_year == "2024"
