@@ -77,7 +77,7 @@ class Page:
             print("\nInvalid page selection! Please try again.\n")
             self.input_to_continue()
             clear_console()
-            self.navigate()
+            if hasattr(self, 'navigate') and callable(getattr(self, 'navigate')): self.navigate()
 
     def input_to_continue(self):
         input(
@@ -169,7 +169,7 @@ class ChangePassword(Page):
         clear_console()
         self.print_content()
         self.change_password()
-    def print_content():
+    def print_content(self):
         print("Enter a new password here or type nothing to cancel and return to the previous page.\n")
         print(f"{self.split_star}")
     def change_password(self):
@@ -187,6 +187,24 @@ class ChangePassword(Page):
             print("\nPassword changed Successfully")
             self.input_to_continue()
 
+class ChangeTitle(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.change_title()
+    def print_content(self):
+        print(f"Enter a new title here (currently: {self.state.current_user.title}) or type nothing to cancel.\n")
+        print(f"{self.split_star}")
+    def change_title(self):
+        new_title = input("\nEnter new title: ")
+        if(new_title == ""):
+            self.state.current_page = self.parent
+            return
+        self.state.current_user.title = new_title
+        if (self.state.save_accounts() == True):
+            print("\nTitle changed Successfully")
+            self.state.current_page = self.parent
+            self.input_to_continue()
 
 class ChangeSuccessStory(Page):
     def onLoad(self):
@@ -333,7 +351,6 @@ class ChangeEducationInfo(Page):
         new_university = input("Enter a new university name or nothing to cancel and return: ")
         if(new_university == ""): return
         else:
-
             self.state.current_user.university = Util.format_words(new_university)
         if (self.state.save_accounts() == True):
             print("\nUniversity story changed Successfully")
@@ -342,10 +359,10 @@ class ChangeEducationInfo(Page):
         clear_console()
         print(f"Degree is currently: {self.state.current_user.major}")
         new_degree = input("Enter a new degree name or nothing to cancel and return: ")
+        #import pdb; pdb.set_trace()
         if(new_degree == ""): return
         else:
-            self.state.current_user.degree = Util.format_words(new_degree)
-
+            self.state.current_user.major = Util.format_words(new_degree)
         if (self.state.save_accounts() == True):
             print("\nDegree changed Successfully")
             self.input_to_continue()
@@ -1545,7 +1562,6 @@ class Friends(Page):
                 if (friend_profile in self.state.current_user.friends):
                     self.view_friend_profile(friend_profile)                
 
-
         remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
         if(remove_friendq == "y" or remove_friendq == "yes"):
             friend_to_remove = input("Type the username of the connection you wish to remove (Usernames are case sensitive): ")
@@ -1553,7 +1569,6 @@ class Friends(Page):
                 self.remove_friend(friend_to_remove)
             else:
                 input("You are not friends with that user!")
-
         self.input_to_continue()
     
     def view_friend_profile(self, other_user):
@@ -1572,8 +1587,7 @@ class Friends(Page):
         print(f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
 
         print("\tExperience History:")
-        num_jobs = len(self.state.users[other_user].previous_jobs)
-        for i in range(0, num_jobs):
+        for i in range(0, Util.MAXIMUM_EXPERIENCE_COUNT):
             print(f"\t\tJob {i+1}:")
             print(f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
             print(f"\t\t\tEmployer: {self.state.users[other_user].previous_jobs[i].employer}")
