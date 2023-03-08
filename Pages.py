@@ -360,10 +360,10 @@ class ChangeEducationInfo(Page):
         clear_console()
         print(f"Degree is currently: {self.state.current_user.major}")
         new_degree = input("Enter a new degree name or nothing to cancel and return: ")
+        #import pdb; pdb.set_trace()
         if(new_degree == ""): return
         else:
-            self.state.current_user.degree = Util.format_words(new_degree)
-
+            self.state.current_user.major = Util.format_words(new_degree)
         if (self.state.save_accounts() == True):
             print("\nDegree changed Successfully")
             self.input_to_continue()
