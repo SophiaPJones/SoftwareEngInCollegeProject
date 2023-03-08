@@ -21,10 +21,12 @@ class State:
 
     def load_accounts(self):
         try:
+            import pdb; pdb.set_trace()
             with open(self.account_file_name, encoding="utf8") as csvFile:
                 #lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 accountList : Any = csv.reader(csvFile, delimiter=',')
                 for account in accountList:
+                    if account == []: continue
                     account[5] = account[5] == "True"
                     account[6] = account[6] == "True"
                     account[7] = account[7] == "True"
@@ -35,7 +37,6 @@ class State:
         except:
             # No accounts file
             return False
-            pass
 
     def save_accounts(self):
         if len(self.users) <= Util.MAXIMUM_USER_COUNT:
@@ -53,7 +54,6 @@ class State:
                     #         print("*****")
                     #         print(accountlist[i])
                     writer.writerow(accountlist)
-
             target.close()
             #self.save_friends()
             return True
