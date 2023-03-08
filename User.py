@@ -42,7 +42,6 @@ class User:
         self.friends = []
         self.pending_requests = []
         self.sent_requests = []
-
         self.major = Util.format_words(major)
         self.university = Util.format_words(university)
         self.university_start_year = university_start_year

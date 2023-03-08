@@ -351,7 +351,6 @@ class ChangeEducationInfo(Page):
         new_university = input("Enter a new university name or nothing to cancel and return: ")
         if(new_university == ""): return
         else:
-
             self.state.current_user.university = Util.format_words(new_university)
         if (self.state.save_accounts() == True):
             print("\nUniversity story changed Successfully")
@@ -1563,7 +1562,6 @@ class Friends(Page):
                 if (friend_profile in self.state.current_user.friends):
                     self.view_friend_profile(friend_profile)                
 
-
         remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
         if(remove_friendq == "y" or remove_friendq == "yes"):
             friend_to_remove = input("Type the username of the connection you wish to remove (Usernames are case sensitive): ")
@@ -1571,7 +1569,6 @@ class Friends(Page):
                 self.remove_friend(friend_to_remove)
             else:
                 input("You are not friends with that user!")
-
         self.input_to_continue()
     
     def view_friend_profile(self, other_user):
@@ -1590,8 +1587,7 @@ class Friends(Page):
         print(f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
 
         print("\tExperience History:")
-        num_jobs = len(self.state.users[other_user].previous_jobs)
-        for i in range(0, num_jobs):
+        for i in range(0, Util.MAXIMUM_EXPERIENCE_COUNT):
             print(f"\t\tJob {i+1}:")
             print(f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
             print(f"\t\t\tEmployer: {self.state.users[other_user].previous_jobs[i].employer}")
