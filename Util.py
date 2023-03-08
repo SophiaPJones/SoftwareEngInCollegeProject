@@ -35,3 +35,6 @@ def clear_console():
         os.system('cls')
     else:
         os.system('clear')
+
+def format_words(string):
+    return string.title()

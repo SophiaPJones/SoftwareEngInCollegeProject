@@ -42,8 +42,9 @@ class User:
         self.friends = []
         self.pending_requests = []
         self.sent_requests = []
-        self.major = major
-        self.university = university
+
+        self.major = Util.format_words(major)
+        self.university = Util.format_words(university)
         self.university_start_year = university_start_year
         self.university_end_year = university_end_year
         pass
@@ -77,10 +78,10 @@ class User:
         self.targeted_advertising = new_option
 
     def change_major(self, new_option):
-        self.major = new_option
+        self.major = Util.format_words(new_option)
 
     def change_university(self, new_option):
-        self.university = new_option
+        self.university = Util.format_words(new_option)
 
     def change_language(self, new_option):
         if (Util.language_list[new_option]):
