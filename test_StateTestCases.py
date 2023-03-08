@@ -198,3 +198,34 @@ class StateTestCases(TestCase):
         assert not ("sophie" in newState.users["dinkster"].friends)
         assert not (newState.users["dinkster"].username in newState.current_user.sent_requests)
         assert not (newState.current_user.username in newState.users["dinkster"].pending_requests)
+
+
+    def test_job_experience(self):
+        job = Job("username", "title", "employer", "date started", "date ended", "location", "description")
+        assert job.username == "username" #?
+        assert job.title == "title"
+        assert job.employer == "employer"
+        assert job.date_started == "date started" #?
+        assert job.date_ended == "date ended" #?
+        assert job.location == "location"
+        assert job.description == "description"
+
+    def test_user_list(self):
+        user = User("first name", "last name", "username", "password", "success story", "major", "university", "title", "about", "experience", "education", "university start year", "university end year")
+        assert user.first_name == "first name"
+        assert user.last_name == "last name"
+        assert user.username == "username"
+        assert user.password == "password"
+        assert user.success_story == "success story"
+        assert user.major == "major"
+        assert user.title == "title"
+        assert user.about == "about"
+        assert user.experience == "experience"
+        assert user.education == "education"
+        assert user.university_start_year == "university start year"
+        assert user.university_end_year == "university end year"
+
+
+
+
+
