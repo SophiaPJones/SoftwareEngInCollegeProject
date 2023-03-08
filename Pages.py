@@ -333,6 +333,7 @@ class ChangeEducationInfo(Page):
         new_university = input("Enter a new university name or nothing to cancel and return: ")
         if(new_university == ""): return
         else:
+
             self.state.current_user.university = Util.format_words(new_university)
         if (self.state.save_accounts() == True):
             print("\nUniversity story changed Successfully")
@@ -344,6 +345,7 @@ class ChangeEducationInfo(Page):
         if(new_degree == ""): return
         else:
             self.state.current_user.degree = Util.format_words(new_degree)
+
         if (self.state.save_accounts() == True):
             print("\nDegree changed Successfully")
             self.input_to_continue()
@@ -1543,6 +1545,7 @@ class Friends(Page):
                 if (friend_profile in self.state.current_user.friends):
                     self.view_friend_profile(friend_profile)                
 
+
         remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
         if(remove_friendq == "y" or remove_friendq == "yes"):
             friend_to_remove = input("Type the username of the connection you wish to remove (Usernames are case sensitive): ")
@@ -1550,6 +1553,7 @@ class Friends(Page):
                 self.remove_friend(friend_to_remove)
             else:
                 input("You are not friends with that user!")
+
         self.input_to_continue()
     
     def view_friend_profile(self, other_user):
