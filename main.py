@@ -18,14 +18,20 @@ def initialize_page_tree(state):
         title="Login", state=state, login_required=False)
     state.root.children["Create Account"] = CreateAccount(
         title="Create Account", state=state, login_required=False)
-    state.root.children["Job Search"] = JobSearch(
+    state.root.children["Job Search/Management"] = Jobs(
         title="Job Search", state=state, login_required=False, parent=state.root)
     state.root.children["Find Someone Who Can Help!"] = FindUser(
         title="Find a User", state=state, login_required=False)
 
-    p = state.root.children["Job Search"]
+    p = state.root.children["Job Search/Management"]
     p.children = {"Post a Job": PostJob(
-        title="Post a Job", state=state, parent=p)}
+        title="Post a Job", state=state, parent=p),
+                  "Manage Your Job Postings": ManageJobs(
+                      title="Manage your Jobs", state=state, parent=p
+                  ),
+                  "Search for Job/Internship": JobSearch(
+                      title = "Search for a Job/Internship" state=state, parent=p
+                  )}
 
     state.root.children['Useful Links'] = UsefulLinks(
         title="Useful Links", state=state, parent=state.root, login_required=False)

@@ -80,14 +80,15 @@ class State:
     def load_jobs(self):
         try:
             with open(self.job_file_name) as csvFile:
-                job_list = csv.reader(lines, delimiter=',')
+                job_list = csv.reader(csvFile, delimiter=',')
                 for job in job_list:
                     self.jobs.append(Job.Job(
-                        job[0],  # title
-                        job[1],  # description
-                        job[2],  # employer
-                        job[3],  # location
-                        job[4]  # salary
+                        job[1],
+                        job[2],
+                        job[3],
+                        job[4],
+                        job[5],
+                        job[6]
                     ))
                 return True
         except:
