@@ -30,7 +30,7 @@ def initialize_page_tree(state):
                       title="Manage your Jobs", state=state, parent=p
                   ),
                   "Search for Job/Internship": JobSearch(
-                      title = "Search for a Job/Internship" state=state, parent=p
+                      title = "Search for a Job/Internship", state=state, parent=p
                   )}
 
     state.root.children['Useful Links'] = UsefulLinks(

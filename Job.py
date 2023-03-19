@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-import itertools
+import uuid;
 
 class Job():
-    new_id = itertools.count()
     def __init__(self, title, description, employer, location, salary, poster):
-        self.id = next(Job.new_id)
+        self.id = uuid.uuid4()
         self.title = title
         self.description = description
         self.employer = employer

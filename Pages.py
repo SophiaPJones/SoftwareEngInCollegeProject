@@ -820,6 +820,15 @@ class ManageJobs(Page):
                 self.state.current_page = self.parent
                 return
 
+class JobSearch(Page):
+    def print_content(self):
+        print(f"Search for Jobs/Internships here!\n{self.split_star}")
+    def onLoad(self):
+        self.user_jobs = [job for job in self.state.jobs if job.poster == self.state.current_user.username]
+        clear_console()
+        self.print_content()
+        self.input_to_continue()
+
 class LearnSkills(Page):
     def print_content(self):
         print(f"\n{self.split_star}\n",
