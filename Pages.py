@@ -835,9 +835,10 @@ class JobSearch(Page):
         self.print_content()
         self.input_to_continue()
         #functionality to save jobs??
-    def saved_jobs(self):
+    def saved_jobs(self, job):
         job = self.user_jobs[job_num]
         clear_console()
+        self.state.current_user.saved_jobs.append(job)
         for i, state_job in enumerate(self.state.jobs):
             if state_job.id == job.id:
                 self.state.jobs[i] = job
@@ -845,19 +846,19 @@ class JobSearch(Page):
                 self.state.current_page = self.parent
                 return
         #check if job is saved 
-        if current_user.jobs != self.state.current_user.jobs 
+        if (self.state.current_user.saved_jobs != self.state.current_user.jobs):
            status = self.get_status(user.jobs)
         self.print_content()
 
     def remove_saved(self, jobs):
         # remove the current job from the student's list of saved jobs
-        self.state.jobs.remove(self.state.current_user.jobs)
+        self.state.jobs.remove(self.state.current_user.saved_jobs)
         # save the changes to the system
         self.state.save_jobs()
         print("\nThis job is no longer in your saved list.")
         return   
     def view_saved(self):
-        for job in self.state.current_user.jobs:
+        for job in self.state.current_user.saved_jobs:
 
         
         
