@@ -833,6 +833,25 @@ class JobSearch(Page):
             self.jobs_to_display = self.state.jobs.copy()
         clear_console()
         self.print_content()
+<<<<<<< HEAD
+        self.input_to_continue()
+        #functionality to save jobs??
+    def saved_jobs(self):
+        job = self.user_jobs[job_num]
+        clear_console()
+        for i, state_job in enumerate(self.state.jobs):
+            if state_job.id == job.id:
+                if(remove):
+                    self.state.jobs.pop(i)
+                else:
+                    self.state.jobs[i] = job
+                self.state.save_jobs()
+                self.state.current_page = self.parent
+                return
+        self.print_content()
+        self.menu()
+        
+=======
         self.display_jobs()
         self.menu()
     def display_jobs(self):
@@ -879,7 +898,11 @@ class JobSearch(Page):
                                     not in job.applications.keys()]
             self.onLoad()
             return
+>>>>>>> ba76167cc14683ed8f7ad71fcae026a0deff1382
 
+<<<<<<< HEAD
+
+=======
     def apply(self, job_id):
         job = self.jobs_to_display[job_id]
         print(f"{self.split_star}\n")
@@ -904,6 +927,7 @@ class JobSearch(Page):
         self.state.save_applications()
         self.state.save_jobs()
         self.onLoad()
+>>>>>>> ba76167cc14683ed8f7ad71fcae026a0deff1382
 class LearnSkills(Page):
     def print_content(self):
         print(f"\n{self.split_star}\n",
