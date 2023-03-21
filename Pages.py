@@ -12,6 +12,7 @@ from State import *
 from User import *
 from Util import *
 from Job import *
+from Application import *
 import random
 
 
@@ -579,7 +580,7 @@ class PostJob(Page):
         if (salary == ""):
             self.state.current_page = self.parent
             return
-        new_job = Job(title, description, employer, location, salary)
+        new_job = Job(title, description, employer, location, salary, self.state.current_user.username)
         self.state.jobs.append(new_job)
         if (not self.state.save_jobs()):
             self.state.jobs.pop()
@@ -729,18 +730,180 @@ class CreateAccount(Page):
             self.onLoad()
 
 
-class JobSearch(Page):
+class Jobs(Page):
     def print_content(self):
-        print(f"Search for or post a job/internship!\n{self.split_star}")
-        print(f"\n Under Construction (Only Job Posting implemented)\n")
-
+        print(f"Search for, post, or manage a job/internship opportunity!\n{self.split_star}")
     def onLoad(self):
         clear_console()
         self.print_content()
         self.print_menu()
         self.page_select()
 
+class ManageJobs(Page):
+    def print_content(self):
+        print(f"Manage your job postings here!\n{self.split_star}")
+    def onLoad(self):
+        self.user_jobs = [job for job in self.state.jobs if job.poster == self.state.current_user.username]
+        clear_console()
+        self.print_content()
+        self.menu()
+    def menu(self):
+        num_jobs = len(self.user_jobs)
+        print(f"Type the number corresponding to the option you'd like to select.")
+        print(f"\t>0. Return To Previous Page")
+        for i in range(0,num_jobs):
+            print(f"\t>{i+1}. {self.user_jobs[i].str()}")
+        selection = input("\nEnter your selection here: ")
+        selection = "".join(selection.split()).lower()
+        select_num = -1
+        try: select_num = int(selection)
+        except: pass
+        if(selection == "0" or selection == "0"):
+            self.state.current_page = self.parent
+            return
+        elif(select_num > 0 and select_num <= num_jobs):
+            self.update_job_info(select_num - 1)
+            return
+        else:
+            print("Invalid selection! Type just the number corresponding to your selection.\n")
+            self.input_to_continue()
+            self.menu()
+    def update_job_info(self, job_num):
+        #todo
+        job = self.user_jobs[job_num]
+        clear_console()
+        print(f"Job #{job_num+1} info:")
+        print(f"\t1. Title: {job.title}")
+        print(f"\t2. Employer: {job.employer}")
+        print(f"\t3. Location: {job.location}")
+        print(f"\t4. Brief Descripton: {job.description}")
+        print(f"\t5. Salary: {job.salary}")
+        print(f"\t6. Remove Job Listing")
+        selection = input("Enter the number corresponding to the field you wish to edit, or type 0 to return: ")
+        selection = "".join(selection.split()).lower()
+        remove = False
+        try: selection = int(selection)
+        except:
+            print("You need to enter a numerical value!")
+            self.input_to_continue()
+            self.update_job_info(job_num)
+        if(selection == 0):
+            self.state.current_page = self.parent
+        elif(selection == 1):
+            new_title = input("\nEnter a new title: ")
+            job.title = new_title
+        elif(selection == 2):
+            new_employer = input("\nEnter a new employer: ")
+            job.employer = new_employer
+        elif(selection == 3):
+            new_location = input("\nEnter a new location:")
+            job.location = new_location
+        elif(selection == 4):
+            new_description = input("Enter a new brief description:")
+            job.description = new_description
+        elif(selection == 5):
+            new_salary = input("Enter a new salary for the job: ")
+            job.salary = new_salary
+        elif(selection == 6):
+            remove = True
+        else:
+            print("Invalid option!")
+            self.input_to_continue()
+            self.update_job_info(job_num)
+            return
+        for i, state_job in enumerate(self.state.jobs):
+            if state_job.id == job.id:
+                if(remove):
+                    self.state.jobs.pop(i)
+                else:
+                    self.state.jobs[i] = job
+                self.state.save_jobs()
+                self.state.current_page = self.parent
+                return
 
+class JobSearch(Page):
+    def __init__(self, title="", login_required = True, state=State(), parent=None):
+        self.first_load = True
+        super(JobSearch, self).__init__(title, login_required, state, parent)
+    def print_content(self):
+        print(f"Search for Jobs/Internships here!\n{self.split_star}")
+    def onLoad(self):
+        if(self.first_load):
+            self.first_load = False
+            self.jobs_to_display = self.state.jobs.copy()
+        clear_console()
+        self.print_content()
+        self.display_jobs()
+        self.menu()
+    def display_jobs(self):
+        for i, job in enumerate(self.jobs_to_display):
+            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary}\n\tDescription: {job.description}")
+        print(f"{self.split_star}")
+    def menu(self):
+        print("\t>0. Return To Previous Page")
+        print("\t>1. Apply to a position")
+        print("\t>2. Filter by jobs you've applied for.")
+        print("\t>3. Filter by jobs you haven't applied for.")
+        selection = input("\nEnter the number corresponding to your selection: ")
+        selection_num = -1
+        try:
+            selection_num = int(selection)
+        except:
+            pass
+        if(selection_num == 0):
+            self.state.current_page = self.parent
+            return
+        elif(selection_num == 1):
+            job_selection = input("\nEnter the number corresponding to the job you'd like to apply to: ")
+            job_selection_num = -1
+            try:
+                job_selection_num = int(job_selection)
+            except:
+                pass
+            if (job_selection_num-1 >= 0 and job_selection_num-1 < len(self.jobs_to_display)):
+                self.apply(job_selection_num-1)
+            else:
+                print("Invalid job number selected! Please try again.")
+                self.input_to_continue()
+                self.menu()
+            return
+        elif(selection_num == 2):
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if self.state.current_user.username
+                                    in job.applications.keys()]
+            self.onLoad()
+            return
+        elif(selection_num == 3):
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if self.state.current_user.username
+                                    not in job.applications.keys()]
+            self.onLoad()
+            return
+
+    def apply(self, job_id):
+        job = self.jobs_to_display[job_id]
+        print(f"{self.split_star}\n")
+        grad_date = input("Enter your expected graduation date (mm/dd/yyyy): ")
+        if(grad_date == ''):
+            self.onLoad()
+        start_date = input("Enter your expected start date (mm/dd/yyyy): ")
+        if(start_date == ''):
+            self.onLoad()
+        paragraph = ""
+        new_line = input("Enter a paragraph describing why you'd be a good fit for this position: \n\t*")
+        while(new_line != ""):
+            paragraph = paragraph + "\n" + new_line
+            new_line = input("\t*")
+        #import pdb; pdb.set_trace()
+        new_application = Application(job.id, self.state.current_user.username, grad_date,start_date, paragraph)
+        self.state.applications[new_application.id] = new_application
+        for i, jobb in enumerate(self.state.jobs):
+            if jobb.id == job.id:
+                job.applications[self.state.current_user.username] = str(new_application.id)
+                self.state.jobs[i] = job
+        self.state.save_applications()
+        self.state.save_jobs()
+        self.onLoad()
 class LearnSkills(Page):
     def print_content(self):
         print(f"\n{self.split_star}\n",
@@ -1422,7 +1585,7 @@ class Friends(Page):
 
     def onLoad(self):
         clear_console()
-        self.state.current_user = self.state.users[self.state.current_user.username]
+        #self.state.current_user = self.state.users[self.state.current_user.username]
         self.menu()
         pass
 
@@ -1431,7 +1594,7 @@ class Friends(Page):
         self.page_select()
 
     def menu(self):
-        self.state.current_user = self.state.users[self.state.current_user.username]
+        #self.state.current_user = self.state.users[self.state.current_user.username]
 
         print("Select an option to change on your account or return home:\n")
         print(f"\t0. Return Home")
