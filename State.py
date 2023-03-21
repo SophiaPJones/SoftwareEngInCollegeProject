@@ -3,6 +3,8 @@ import csv
 import User
 import Job
 import Util
+import Application
+import ast
 from typing import Any
 
 
@@ -13,13 +15,14 @@ class State:
         self.job_file_name = ''
         self.friends_file_name = ''
         self.experience_file_name = ''
+        self.application_file_name = ''
         self.current_user = None
         self.application_active = True
         self.current_page = None
         self.root = None
         self.jobs = []
         self.success_stories = {}
-
+        self.applications = {} #map of application IDs to Application instances
     def load_accounts(self):
         try:
             # import pdb; pdb.set_trace()
@@ -88,7 +91,8 @@ class State:
                         job[3],
                         job[4],
                         job[5],
-                        job[6]
+                        job[6],
+                        applications = ast.literal_eval(job[7])
                     ))
                 return True
         except:
@@ -173,5 +177,27 @@ class State:
                         experiences.writerow(job.list())
 
             return True
+        except:
+            return False
+
+    def save_applications(self):
+        try:
+            with open(self.application_file_name, 'w+') as csvFile:
+                applications = csv.writer(csvFile, delimiter = ',')
+                for key, app in self.applications.items():
+                    applications.writerow(app.list())
+            return True
+        except:
+            return False
+
+    def load_applications(self):
+        try:
+            # import pdb; pdb.set_trace()
+            with open(self.application_file_name, 'r') as csvFile:
+                applications = csv.reader(csvFile, delimiter=',')
+                for key, app in applications.items():
+                    app_id = key
+                    self.applications[app_id] = Application(app[1],app[2], app[3], app[4], app[5])
+                return True
         except:
             return False

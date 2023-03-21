@@ -138,12 +138,14 @@ def main():
     state.job_file_name = 'jobs.csv'
     state.friends_file_name = 'friends.csv'
     state.experience_file_name = 'experience.csv'
+    state.application_file_name = 'applications.csv'
 
     state.load_accounts()
     state.load_success_stories()
     state.load_jobs()
     state.load_friends()
     state.load_experience()
+    state.load_applications()
     initialize_page_tree(state)
     while (state.application_active):
         if (state.current_page == None):

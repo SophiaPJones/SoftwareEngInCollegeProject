@@ -2,7 +2,7 @@
 import uuid;
 
 class Job():
-    def __init__(self, title, description, employer, location, salary, poster):
+    def __init__(self, title, description, employer, location, salary, poster, applications = {}):
         self.id = uuid.uuid4()
         self.title = title
         self.description = description
@@ -10,7 +10,8 @@ class Job():
         self.location = location
         self.salary = salary
         self.poster = poster
+        self.applications = applications #maps usernames to application IDs
     def list(self):
-        return [self.id, self.title, self.description, self.employer, self.location, self.salary, self.poster]
+        return [self.id, self.title, self.description, self.employer, self.location, self.salary, self.poster, self.applications]
     def str(self):
         return f"Title: {self.title}, Employer: {self.employer}, Location: {self.location}, Salary: {self.salary}"
