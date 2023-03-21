@@ -149,12 +149,14 @@ class StateTestCases(TestCase):
         assert user.success_story == "Testing out this functionality"
 
     def test_job_creation(self):
-        job = Job("python dev", "backend dev", "Apple", "USA", "$100000")
+        job = Job("python dev", "backend dev",
+                  "Apple", "USA", "$100000", "typies")
         assert job.title == "python dev"
         assert job.description == "backend dev"
         assert job.employer == "Apple"
         assert job.location == "USA"
         assert job.salary == "$100000"
+        assert job.poster == "typies"
 
     def test_change_langauge(self):
         user = User("first", "second", "Username1", "Password1!")
@@ -231,12 +233,13 @@ class StateTestCases(TestCase):
 
     def test_job_experience(self):
         job = Job("Product Dev. Intern", "Make stuff",
-                  "Starbucks", "Florida", 60000)
+                  "Starbucks", "Florida", 60000, "typies")
         assert job.title == "Product Dev. Intern"
         assert job.description == "Make stuff"
         assert job.employer == "Starbucks"
         assert job.location == "Florida"
         assert job.salary == 60000
+        assert job.poster == "typies"
 
     def test_user_list(self):
         user = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",

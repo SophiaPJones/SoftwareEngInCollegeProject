@@ -22,7 +22,8 @@ class State:
         self.root = None
         self.jobs = []
         self.success_stories = {}
-        self.applications = {} #map of application IDs to Application instances
+        self.applications = {}  # map of application IDs to Application instances
+
     def load_accounts(self):
         try:
             # import pdb; pdb.set_trace()
@@ -69,7 +70,7 @@ class State:
 
     def save_jobs(self):
         if len(self.users) <= Util.MAXIMUM_JOB_COUNT:  # maybe self.jobs
-            with open(self.job_file_name, 'w') as target:
+            with open(self.job_file_name, 'w', encoding="utf8") as target:
                 writer = csv.writer(target)
                 for job in self.jobs:
                     job_list = job.list()
@@ -82,9 +83,11 @@ class State:
 
     def load_jobs(self):
         try:
-            with open(self.job_file_name) as csvFile:
+            with open(self.job_file_name, encoding="utf8") as csvFile:
                 job_list = csv.reader(csvFile, delimiter=',')
                 for job in job_list:
+                    if (job == []):
+                        continue
                     self.jobs.append(Job.Job(
                         job[1],
                         job[2],
@@ -92,7 +95,7 @@ class State:
                         job[4],
                         job[5],
                         job[6],
-                        applications = ast.literal_eval(job[7])
+                        applications=ast.literal_eval(job[7])
                     ))
                 return True
         except:
@@ -105,7 +108,7 @@ class State:
 
     # friends
     def save_friends(self):
-        with open(self.friends_file_name, 'w+') as target:
+        with open(self.friends_file_name, 'w+', encoding="utf8") as target:
             writer = csv.writer(target)
             # user user2 status <pending, sent, friends>
             for user in self.users:
@@ -127,7 +130,7 @@ class State:
     def load_friends(self):
         try:
             # open the file
-            with open(self.friends_file_name, 'r') as csvFile:
+            with open(self.friends_file_name, 'r', encoding="utf8") as csvFile:
                 # lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
                 friend_list = csv.reader(lines, delimiter=',')
                 for friend_ in friend_list:
@@ -154,7 +157,7 @@ class State:
     def load_experience(self):
         try:
             # import pdb; pdb.set_trace()
-            with open(self.experience_file_name, 'r') as csvFile:
+            with open(self.experience_file_name, 'r', encoding="utf8") as csvFile:
                 experiences = csv.reader(csvFile, delimiter=',')
                 for exp in experiences:
                     username = exp[0]
@@ -170,7 +173,7 @@ class State:
 
     def save_experience(self):
         try:
-            with open(self.experience_file_name, 'w+') as csvFile:
+            with open(self.experience_file_name, 'w+', encoding="utf8") as csvFile:
                 experiences = csv.writer(csvFile, delimiter=',')
                 for user in self.users:
                     for job in self.users[user].previous_jobs:
@@ -182,8 +185,8 @@ class State:
 
     def save_applications(self):
         try:
-            with open(self.application_file_name, 'w+') as csvFile:
-                applications = csv.writer(csvFile, delimiter = ',')
+            with open(self.application_file_name, 'w+', encoding="utf8") as csvFile:
+                applications = csv.writer(csvFile, delimiter=',')
                 for key, app in self.applications.items():
                     applications.writerow(app.list())
             return True
@@ -193,11 +196,12 @@ class State:
     def load_applications(self):
         try:
             # import pdb; pdb.set_trace()
-            with open(self.application_file_name, 'r') as csvFile:
+            with open(self.application_file_name, 'r', encoding="utf8") as csvFile:
                 applications = csv.reader(csvFile, delimiter=',')
                 for key, app in applications.items():
                     app_id = key
-                    self.applications[app_id] = Application(app[1],app[2], app[3], app[4], app[5])
+                    self.applications[app_id] = Application(
+                        app[1], app[2], app[3], app[4], app[5])
                 return True
         except:
             return False
