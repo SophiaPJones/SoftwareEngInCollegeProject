@@ -668,6 +668,7 @@ class PostJob(Page):
         self.state.jobs.append(new_job)
         if (not self.state.save_jobs()):
             self.state.jobs.pop()
+
         self.state.current_page = self.parent
 
     def print_content(self):
@@ -748,6 +749,17 @@ class Login(Page):
                     if len(self.state.current_user.pending_requests) != 0:
                         print(
                             "\nYou have a pending request from a user. Please check your pending requests.\n")
+                    new_apps = {}
+                    for key, app in self.state.applications.items():
+                        if app.user == self.state.current_user.username:
+                            job_id = app.job_id
+                            job_exists = bool(filter(lambda job: job.id == job_id, self.state.jobs))
+                            if not job_exists:
+                                print("A job you've applied has been removed!")
+                            else:
+                                new_apps[key] = app
+                    self.state.applications = new_apps
+                    self.state.save_applications()
                     self.input_to_continue()
 
                     #
@@ -913,9 +925,9 @@ class ManageJobs(Page):
                     self.state.jobs.pop(i)
                 else:
                     self.state.jobs[i] = job
-                self.state.save_jobs()
-                self.state.current_page = self.parent
-                return
+        self.state.save_jobs()
+        self.state.current_page = self.parent
+        return
 
 
 class JobSearch(Page):
@@ -930,14 +942,22 @@ class JobSearch(Page):
         if (self.first_load):
             self.first_load = False
             self.jobs_to_display = self.state.jobs.copy()
+        self.applied_jobs = [job for job in self.state.jobs
+                                if self.state.current_user.username
+                                in job.applications.keys()]
         clear_console()
         self.print_content()
         self.display_jobs()
         self.menu()
 
     def display_jobs(self):
+        has_been_applied_for = ""
         for i, job in enumerate(self.jobs_to_display):
-            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary}\n\tDescription: {job.description}")
+            if(job in self.applied_jobs):
+                has_been_applied_for = "(Application Submitted)"
+            else:
+                has_been_applied_for = ""
+            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary} {has_been_applied_for}\n\tDescription: {job.description}")
         print(f"{self.split_star}")
 
     def menu(self):
@@ -985,6 +1005,42 @@ class JobSearch(Page):
 
     def apply(self, job_id):
         job = self.jobs_to_display[job_id]
+        if(job.poster == self.state.current_user.username):
+            print("You cannot apply to a job you've posted.")
+            self.input_to_continue()
+            self.onLoad()
+            return
+        if self.state.current_user.username in job.applications.keys():
+            print("You've already applied to this job! Would you like to rescind your application?")
+            print("\t>0. Yes")
+            print("\t>1. No")
+            selection = input("\nEnter the number corresponding to your selection: ")
+            selection_num = -1
+            try:
+                selection_num = int(selection)
+            except:
+                print("Invalid option, try again.")
+                self.input_to_continue()
+                self.apply(job_id)
+                return
+            if(selection_num == 0):
+                print("You've rescinded your application!")
+                self.input_to_continue()
+                job.applications.pop(self.state.current_user.username)
+                for i, jobb in enumerate(self.state.jobs):
+                    if jobb.id == job.id:
+                        self.state.jobs[i] = job
+                self.onLoad()
+                return
+            elif(selection_num == 1):
+                print("You cannot apply to a job you've already applied to.")
+                self.input_to_continue()
+                self.onLoad()
+                return
+            else:
+                print("Invalid option, try again.")
+                self.apply(job_id)
+                return
         print(f"{self.split_star}\n")
         grad_date = input("Enter your expected graduation date (mm/dd/yyyy): ")
         if (grad_date == ''):
