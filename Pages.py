@@ -664,7 +664,7 @@ class PostJob(Page):
             self.state.current_page = self.parent
             return
         new_job = Job(title, description, employer, location,
-                      salary, self.state.current_user.username)
+                      salary, self.state.current_user.username, {})
         self.state.jobs.append(new_job)
         if (not self.state.save_jobs()):
             self.state.jobs.pop()
