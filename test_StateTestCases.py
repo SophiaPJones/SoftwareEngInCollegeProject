@@ -149,12 +149,14 @@ class StateTestCases(TestCase):
         assert user.success_story == "Testing out this functionality"
 
     def test_job_creation(self):
-        job = Job("python dev", "backend dev", "Apple", "USA", "$100000")
+        job = Job("python dev", "backend dev",
+                  "Apple", "USA", "$100000", "typies")
         assert job.title == "python dev"
         assert job.description == "backend dev"
         assert job.employer == "Apple"
         assert job.location == "USA"
         assert job.salary == "$100000"
+        assert job.poster == "typies"
 
     def test_change_langauge(self):
         user = User("first", "second", "Username1", "Password1!")
@@ -231,12 +233,13 @@ class StateTestCases(TestCase):
 
     def test_job_experience(self):
         job = Job("Product Dev. Intern", "Make stuff",
-                  "Starbucks", "Florida", 60000)
+                  "Starbucks", "Florida", 60000, "typies")
         assert job.title == "Product Dev. Intern"
         assert job.description == "Make stuff"
         assert job.employer == "Starbucks"
         assert job.location == "Florida"
         assert job.salary == 60000
+        assert job.poster == "typies"
 
     def test_user_list(self):
         user = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
@@ -254,3 +257,90 @@ class StateTestCases(TestCase):
         assert user.education == "This is the Education"
         assert user.university_start_year == "2020"
         assert user.university_end_year == "2024"
+
+    def test_apply_for_job(self):
+        newState = State()
+        user1 = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education1", "2019", "2023")
+        user2 = User("First", "Last", "flast", "Password2!", "I am bigger success", True, True, True, 0, "Biology", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education2", "2020", "2024")
+        job = Job("Job 1", "Description 1", "Employer 1",
+                  "Location 1", "60000", user1.username)
+        assert job.applications == {}  # Job has no applicants
+        newState.current_user = user2
+        newState.jobs = [job]
+        newState.job_file_name = 'jobFileTest.csv'
+        jobSearchPage = JobSearch(state=newState)
+        jobSearchPage.jobs_to_display = [job]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n'))  # stdin
+        jobSearchPage.apply(0)
+        assert job.applications != {}  # Job has a applicant
+
+    def test_update_job_info(self):
+        newState = State()
+        user1 = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education1", "2019", "2023")
+        job = Job("Old Job Title", "Old Description", "Old Employer",
+                  "Old Location", "60000", user1.username)
+        newState.current_user = user1
+        newState.jobs = [job]
+        newState.job_file_name = 'jobFileTest.csv'
+        manageJobsPage = ManageJobs(state=newState)
+        manageJobsPage.user_jobs = [job]
+
+        assert job.title == "Old Job Title"
+        assert job.description == "Old Description"
+        assert job.employer == "Old Employer"
+        assert job.location == "Old Location"
+        assert job.salary == "60000"
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('1\nNew Job Title\n2\nNew Employer\n3\nNew Location\n4\nNew Description\n5\n70000\n'))
+        manageJobsPage.update_job_info(0)
+        manageJobsPage.update_job_info(0)
+        manageJobsPage.update_job_info(0)
+        manageJobsPage.update_job_info(0)
+        manageJobsPage.update_job_info(0)
+        assert job.title == "New Job Title"
+        assert job.description == "New Description"
+        assert job.employer == "New Employer"
+        assert job.location == "New Location"
+        assert job.salary == "70000"
+
+    def test_apply_for_own_job(self):
+        newState = State()
+        user1 = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education1", "2019", "2023")
+        job = Job("Job 2", "Description 1", "Employer 1",
+                  "Location 1", "60000", user1.username, {})
+        assert job.applications == {}  # Job has no applicants
+        newState.current_user = user1
+        newState.jobs = [job]
+        newState.job_file_name = 'jobFileTest.csv'
+        jobSearchPage = JobSearch(state=newState)
+        jobSearchPage.jobs_to_display = [job]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n'))  # stdin
+        jobSearchPage.apply(0)
+        assert job.applications == {}  # Job has a applicant
+
+    def test_apply_for_job_twice(self):
+        newState = State()
+        user1 = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education1", "2019", "2023")
+        user2 = User("First", "Last", "flast", "Password2!", "I am bigger success", True, True, True, 0, "Biology", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education2", "2020", "2024")
+        job = Job("Job 1", "Description 1", "Employer 1",
+                  "Location 1", "60000", user1.username, {})
+        assert job.applications == {}  # Job has no applicants
+        newState.current_user = user2
+        newState.jobs = [job]
+        newState.job_file_name = 'jobFileTest.csv'
+        jobSearchPage = JobSearch(state=newState)
+        jobSearchPage.jobs_to_display = [job]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n01/01/1991\n02/01/1991\nBecause I rock still\n\n0\n'))  # stdin
+        jobSearchPage.apply(0)
+        assert len(job.applications) == 1  # Job has a applicant
+        jobSearchPage.apply(0)
+        assert len(job.applications) == 1  # Applying twice did not work

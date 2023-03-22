@@ -78,7 +78,8 @@ class Page:
             print("\nInvalid page selection! Please try again.\n")
             self.input_to_continue()
             clear_console()
-            if hasattr(self, 'navigate') and callable(getattr(self, 'navigate')): self.navigate()
+            if hasattr(self, 'navigate') and callable(getattr(self, 'navigate')):
+                self.navigate()
 
     def input_to_continue(self):
         input(
@@ -117,6 +118,7 @@ class ChangeProfileName(Page):
         clear_console()
         self.print_content()
         self.menu()
+
     def menu(self):
         print(f"\t0. Return Home")
         print(
@@ -144,8 +146,10 @@ class ChangeProfileName(Page):
               selection == "returnhome" or
               selection == "return"):
             self.state.current_page = self.parent
+
     def print_content(self):
         print("Currently, your first name ")
+
     def change_first_name(self):
         new_first_name = input("\nEnter new first name: ")
         while (new_first_name == ""):
@@ -170,14 +174,16 @@ class ChangePassword(Page):
         clear_console()
         self.print_content()
         self.change_password()
+
     def print_content(self):
         print("Enter a new password here or type nothing to cancel and return to the previous page.\n")
         print(f"{self.split_star}")
+
     def change_password(self):
         new_password = input("\nEnter new password: ")
         passwordValid = Util.validate_password(new_password)
         while (not passwordValid):
-            if(new_password == ""):
+            if (new_password == ""):
                 self.state.current_page = self.parent
                 return
             print("Invalid password. The password must be between 8 and 12 characters (inclusive) and must contain:\n\t* At least 1 capital letter\n\t* At least 1 special character.\n\t* At least 1 digit.\nPlease try again.\n")
@@ -188,17 +194,21 @@ class ChangePassword(Page):
             print("\nPassword changed Successfully")
             self.input_to_continue()
 
+
 class ChangeTitle(Page):
     def onLoad(self):
         clear_console()
         self.print_content()
         self.change_title()
+
     def print_content(self):
-        print(f"Enter a new title here (currently: {self.state.current_user.title}) or type nothing to cancel.\n")
+        print(
+            f"Enter a new title here (currently: {self.state.current_user.title}) or type nothing to cancel.\n")
         print(f"{self.split_star}")
+
     def change_title(self):
         new_title = input("\nEnter new title: ")
-        if(new_title == ""):
+        if (new_title == ""):
             self.state.current_page = self.parent
             return
         self.state.current_user.title = new_title
@@ -207,17 +217,21 @@ class ChangeTitle(Page):
             self.state.current_page = self.parent
             self.input_to_continue()
 
+
 class ChangeSuccessStory(Page):
     def onLoad(self):
         clear_console()
         self.print_content()
         self.change_success_story()
         self.state.current_page = self.parent
+
     def print_content(self):
         print("Change your Success Story here!\n")
-        success_story_display = "\t" + self.state.current_user.success_story.replace('\n','\n\t')
+        success_story_display = "\t" + \
+            self.state.current_user.success_story.replace('\n', '\n\t')
         print(f"Currently, your success story is: \n{success_story_display}")
         print(f"{self.split_star}")
+
     def change_success_story(self):
         new_success_story = ""
         user_story_in = input(
@@ -225,11 +239,13 @@ class ChangeSuccessStory(Page):
         while user_story_in != "":
             new_success_story += user_story_in + "\n"
             user_story_in = input("\t> ")
-        if new_success_story != "": self.state.current_user.success_story = new_success_story
+        if new_success_story != "":
+            self.state.current_user.success_story = new_success_story
         if (self.state.save_accounts() == True):
             print("\nSuccess story changed Successfully")
             self.input_to_continue()
         self.state.load_success_stories()
+
 
 class ChangeAboutMe(Page):
     def onLoad(self):
@@ -237,11 +253,14 @@ class ChangeAboutMe(Page):
         self.print_content()
         self.change_about_me()
         self.state.current_page = self.parent
+
     def print_content(self):
         print("Tell other users about yourself here!\n")
-        about_display = "\t" + self.state.current_user.about.replace('\n','\n\t')
+        about_display = "\t" + \
+            self.state.current_user.about.replace('\n', '\n\t')
         print(f"Currently, your about me is: \n{about_display}")
         print(f"{self.split_star}")
+
     def change_about_me(self):
         new_about_me = ""
         about_me_in = input(
@@ -254,17 +273,22 @@ class ChangeAboutMe(Page):
             print("\nSuccess story changed Successfully")
             self.input_to_continue()
 
+
 class ChangeExperienceSummary(Page):
     def onLoad(self):
         clear_console()
         self.print_content()
         self.change_experience_summary()
         self.state.current_page = self.parent
+
     def print_content(self):
         print("Tell other users about your experience!\n")
-        experience_display = "\t" + self.state.current_user.experience.replace('\n','\n\t')
-        print(f"Currently, your description of your experience is: \n{experience_display}")
+        experience_display = "\t" + \
+            self.state.current_user.experience.replace('\n', '\n\t')
+        print(
+            f"Currently, your description of your experience is: \n{experience_display}")
         print(f"{self.split_star}")
+
     def change_experience_summary(self):
         new_experience = ""
         experience_in = input(
@@ -272,27 +296,33 @@ class ChangeExperienceSummary(Page):
         while experience_in != "":
             new_experience += experience_in + "\n"
             experience_in = input("\t> ")
-        if(new_experience != ""):
+        if (new_experience != ""):
             self.state.current_user.experience = new_experience
             if (self.state.save_accounts() == True):
                 print("\nExperience summary changed Successfully")
                 self.input_to_continue()
+
+
 class ChangeEducationInfo(Page):
     def onLoad(self):
         clear_console()
         self.print_content()
         self.menu()
         self.current_page = self.parent
+
     def print_content(self):
         print("Change your Education information here!\n")
         print("Currently, your information is:")
         print(f"\tUniversity Name: {self.state.current_user.university}")
         print(f"\tDegree: {self.state.current_user.major}")
-        print(f"\tAttended from {self.state.current_user.university_start_year} to {self.state.current_user.university_end_year}")
-        education_desc_display = "\t\t" + self.state.current_user.education.replace('\n','\n\t\t')
+        print(
+            f"\tAttended from {self.state.current_user.university_start_year} to {self.state.current_user.university_end_year}")
+        education_desc_display = "\t\t" + \
+            self.state.current_user.education.replace('\n', '\n\t\t')
         print(f"\tYour description of your education:")
         print(education_desc_display)
         print(f"{self.split_star}")
+
     def menu(self):
         print("\t> 0. Return To Profile Management")
         print("\t> 1. Update University Name")
@@ -303,101 +333,119 @@ class ChangeEducationInfo(Page):
         print("\n")
         selection = input("Enter the number corresponding to your option: ")
         selection = "".join(selection.split()).lower()
-        if(selection == "updateuniversityname" or
+        if (selection == "updateuniversityname" or
            selection == "universityname" or
-           selection =="university" or
+           selection == "university" or
            selection == "1" or
            selection == "1."):
             self.change_university_name()
-        elif(selection == "updatedegree" or
-           selection =="degree" or
-           selection == "2" or
-           selection == "2."):
+        elif (selection == "updatedegree" or
+              selection == "degree" or
+              selection == "2" or
+              selection == "2."):
             self.change_degree()
-        elif(selection == "updatestartyear" or
-           selection =="startyear" or
-           selection == "start" or
-           selection == "3" or
-           selection == "3."):
+        elif (selection == "updatestartyear" or
+              selection == "startyear" or
+              selection == "start" or
+              selection == "3" or
+              selection == "3."):
             self.update_start_year()
-        elif(selection == "updateendyear" or
-           selection =="endyear" or
-           selection == "end" or
-           selection == "4" or
-           selection == "4."):
+        elif (selection == "updateendyear" or
+              selection == "endyear" or
+              selection == "end" or
+              selection == "4" or
+              selection == "4."):
             self.update_end_year()
-        elif(selection == "returntoprofilemanagement" or
-           selection =="return" or
-           selection == "profile" or
-           selection == "profilemanagement" or
-           selection == "0" or
-           selection == "0."):
+        elif (selection == "returntoprofilemanagement" or
+              selection == "return" or
+              selection == "profile" or
+              selection == "profilemanagement" or
+              selection == "0" or
+              selection == "0."):
             self.state.current_page = self.parent
-        elif(selection == "updateeducationdescription" or
-             selection == "updateeducation" or
-             selection == "updatedescription" or
-             selection == "educationdescription" or
-             selection == "description" or
-             selection == "education" or
-             selection == "5." or
-             selection == "5"):
+        elif (selection == "updateeducationdescription" or
+              selection == "updateeducation" or
+              selection == "updatedescription" or
+              selection == "educationdescription" or
+              selection == "description" or
+              selection == "education" or
+              selection == "5." or
+              selection == "5"):
             self.change_education_description()
         else:
             print("Invalid selection!")
             self.input_to_continue()
             return
+
     def change_university_name(self):
         clear_console()
-        print(f"University name is currently: {self.state.current_user.university}")
-        new_university = input("Enter a new university name or nothing to cancel and return: ")
-        if(new_university == ""): return
+        print(
+            f"University name is currently: {self.state.current_user.university}")
+        new_university = input(
+            "Enter a new university name or nothing to cancel and return: ")
+        if (new_university == ""):
+            return
         else:
-            self.state.current_user.university = Util.format_words(new_university)
+            self.state.current_user.university = Util.format_words(
+                new_university)
         if (self.state.save_accounts() == True):
             print("\nUniversity story changed Successfully")
             self.input_to_continue()
+
     def change_degree(self):
         clear_console()
         print(f"Degree is currently: {self.state.current_user.major}")
-        new_degree = input("Enter a new degree name or nothing to cancel and return: ")
-        #import pdb; pdb.set_trace()
-        if(new_degree == ""): return
+        new_degree = input(
+            "Enter a new degree name or nothing to cancel and return: ")
+        # import pdb; pdb.set_trace()
+        if (new_degree == ""):
+            return
         else:
             self.state.current_user.major = Util.format_words(new_degree)
         if (self.state.save_accounts() == True):
             print("\nDegree changed Successfully")
             self.input_to_continue()
+
     def change_education_description(self):
         clear_console()
         print(f"Education description is currently: ")
-        education_desc_display = "\t" + self.state.current_user.education.replace('\n','\n\t')
+        education_desc_display = "\t" + \
+            self.state.current_user.education.replace('\n', '\n\t')
         print(education_desc_display)
         new_education_description = ""
-        education_in = input("Enter a new description of your education (type nothing and press enter to stop): ")
-        while(education_in != ""):
+        education_in = input(
+            "Enter a new description of your education (type nothing and press enter to stop): ")
+        while (education_in != ""):
             new_education_description += education_in + "\n"
             education_in = input("\t> ")
         if new_education_description != "":
             self.state.current_user.education = new_education_description
-            if(self.state.save_accounts() == True):
+            if (self.state.save_accounts() == True):
                 print("\nEducation description changed successfully!")
                 self.input_to_continue()
 
     def update_start_year(self):
         clear_console()
-        print(f"University start year is currently: {self.state.current_user.university_start_year}")
-        new_university_start_year = input("Enter a new university start year or nothing to cancel and return: ")
-        if(new_university_start_year == ""): return
+        print(
+            f"University start year is currently: {self.state.current_user.university_start_year}")
+        new_university_start_year = input(
+            "Enter a new university start year or nothing to cancel and return: ")
+        if (new_university_start_year == ""):
+            return
         else:
             self.state.current_user.university_start_year = new_university_start_year
         if (self.state.save_accounts() == True):
             print("\nStart changed Successfully")
             self.input_to_continue()
+
     def update_end_year(self):
         clear_console()
-        print(f"University end year is currently: {self.state.current_user.university_end_year}")
-        new_university_end_year = input("Enter a new university end year or nothing to cancel and return: ")
-        if(new_university_end_year == ""): return
+        print(
+            f"University end year is currently: {self.state.current_user.university_end_year}")
+        new_university_end_year = input(
+            "Enter a new university end year or nothing to cancel and return: ")
+        if (new_university_end_year == ""):
+            return
         else:
             self.state.current_user.university_end_year = new_university_end_year
         if (self.state.save_accounts() == True):
@@ -410,19 +458,27 @@ class ChangeExperienceInfo(Page):
         clear_console()
         self.print_content()
         self.menu()
+
     def print_content(self):
         print("Update your Experience History here!\n")
         num_jobs = len(self.state.current_user.previous_jobs)
         print(f"Currently, you have {num_jobs} previous jobs listed.")
         for i in range(0, num_jobs):
             print(f"\tJob {i+1}:")
-            print(f"\t\tTitle: {self.state.current_user.previous_jobs[i].title}")
-            print(f"\t\tEmployer: {self.state.current_user.previous_jobs[i].employer}")
-            print(f"\t\tDate Started: {self.state.current_user.previous_jobs[i].date_started}")
-            print(f"\t\tDate Ended: {self.state.current_user.previous_jobs[i].date_ended}")
-            print(f"\t\tLocation: {self.state.current_user.previous_jobs[i].location}")
-            print(f"\t\tDescription: {self.state.current_user.previous_jobs[i].description}")
+            print(
+                f"\t\tTitle: {self.state.current_user.previous_jobs[i].title}")
+            print(
+                f"\t\tEmployer: {self.state.current_user.previous_jobs[i].employer}")
+            print(
+                f"\t\tDate Started: {self.state.current_user.previous_jobs[i].date_started}")
+            print(
+                f"\t\tDate Ended: {self.state.current_user.previous_jobs[i].date_ended}")
+            print(
+                f"\t\tLocation: {self.state.current_user.previous_jobs[i].location}")
+            print(
+                f"\t\tDescription: {self.state.current_user.previous_jobs[i].description}")
         print(f"{self.split_star}")
+
     def menu(self):
         print("Select a job to edit, add a new job, or return home by typing the name or number corresponding to your selected option")
         print("\t0. Return Home")
@@ -434,20 +490,23 @@ class ChangeExperienceInfo(Page):
             "Type your selected options corresponding number: ")
         selection = "".join(selection.split()).lower()
         select_num = -1
-        try: select_num = int(selection)
-        except: pass
+        try:
+            select_num = int(selection)
+        except:
+            pass
         if (selection == "0" or
-              selection == "0."):
+                selection == "0."):
             self.state.current_page = self.parent
-        elif(select_num > 0 and select_num <= num_jobs):
+        elif (select_num > 0 and select_num <= num_jobs):
             self.update_job_info(select_num-1)
-        elif(select_num == num_jobs+1):
+        elif (select_num == num_jobs+1):
             self.add_new_job()
         else:
             self.state.current_page = self.parent
             return
+
     def update_job_info(self, job_num):
-        #todo
+        # todo
         job = self.state.current_user.previous_jobs[job_num]
         clear_console()
         print(f"Job #{job_num+1} info:")
@@ -457,31 +516,33 @@ class ChangeExperienceInfo(Page):
         print(f"\t4. Date Ended: {job.date_ended}")
         print(f"\t5. Location: {job.location}")
         print(f"\t6. Brief Descripton: {job.description}")
-        selection = input("Enter the number corresponding to the field you wish to edit, or type 0 to return: ")
+        selection = input(
+            "Enter the number corresponding to the field you wish to edit, or type 0 to return: ")
         selection = "".join(selection.split()).lower()
-        try: selection = int(selection)
+        try:
+            selection = int(selection)
         except:
             print("You need to enter a numerical value!")
             self.input_to_continue()
             self.update_job_info()
-        if(selection == 0):
+        if (selection == 0):
             self.state.current_page = self.parent
-        elif(selection == 1):
+        elif (selection == 1):
             new_title = input("\nEnter a new title: ")
             job.title = new_title
-        elif(selection == 2):
+        elif (selection == 2):
             new_employer = input("\nEnter a new employer: ")
             job.employer = new_employer
-        elif(selection == 3):
+        elif (selection == 3):
             new_start = input("\nEnter a new start date: ")
             job.date_started = new_start
-        elif(selection == 4):
+        elif (selection == 4):
             new_end = input("\nEnter a new end date: ")
             job.date_ended = new_end
-        elif(selection == 5):
+        elif (selection == 5):
             new_location = input("\nEnter a new location:")
             job.location = new_location
-        elif(selection == 6):
+        elif (selection == 6):
             new_description = input("Enter a new brief description:")
             job.description = new_description
         else:
@@ -491,26 +552,36 @@ class ChangeExperienceInfo(Page):
             return
         self.state.current_user.previous_jobs[job_num] = job
         self.state.save_experience()
+
     def add_new_job(self):
         clear_console()
-        if(len(self.state.current_user.previous_jobs) > Util.MAXIMUM_EXPERIENCE_COUNT):
-            print(f"You cannot have more than {Util.MAXIMUM_EXPERIENCE_COUNT} jobs in your experience history!")
+        if (len(self.state.current_user.previous_jobs) > Util.MAXIMUM_EXPERIENCE_COUNT):
+            print(
+                f"You cannot have more than {Util.MAXIMUM_EXPERIENCE_COUNT} jobs in your experience history!")
             self.input_to_continue()
             return
         print("Enter the information for a new work experience entry here!")
         print("Type nothing and press enter when prompted to cancel and return.")
         title = input("Enter your title in the position: ").strip()
-        if(title == ""): return
+        if (title == ""):
+            return
         employer = input("Enter the employer for this position: ").strip()
-        if(employer == ""): return
-        start_date = input("Enter the start date for this position (mm/dd/yyyy): ").strip()
-        if(start_date == ""): return
-        end_date = input("Enter the end date for this position (mm/dd/yyyy): ").strip()
-        if(end_date == ""): return
+        if (employer == ""):
+            return
+        start_date = input(
+            "Enter the start date for this position (mm/dd/yyyy): ").strip()
+        if (start_date == ""):
+            return
+        end_date = input(
+            "Enter the end date for this position (mm/dd/yyyy): ").strip()
+        if (end_date == ""):
+            return
         location = input("Enter the location for this job: ").strip()
-        if(location == ""): return
+        if (location == ""):
+            return
         description = input("Enter a brief description for this job: ").strip()
-        if(description == ""): return
+        if (description == ""):
+            return
         new_job = JobExperience(self.state.current_user.username,
                                 title,
                                 employer,
@@ -535,27 +606,39 @@ class ManageProfile(Page):
         print(f"\tFirst Name: {self.state.current_user.first_name}")
         print(f"\tLast Name: {self.state.current_user.last_name}")
         print(f"\tTitle: {self.state.current_user.title}")
-        about_display = "\t\t" + self.state.current_user.about.replace('\n','\n\t\t')
+        about_display = "\t\t" + \
+            self.state.current_user.about.replace('\n', '\n\t\t')
         print(f"\tCurrently, your about me is: \n{about_display}")
         print(f"\tCurrently, your summary of your work experience is:")
-        experience_display = "\t\t" + self.state.current_user.experience.replace('\n','\n\t\t')
+        experience_display = "\t\t" + \
+            self.state.current_user.experience.replace('\n', '\n\t\t')
         print(experience_display)
         print("\tEducation:")
         print(f"\t\tUniversity: {self.state.current_user.university}")
         print(f"\t\tMajor/Degree: {self.state.current_user.major}")
-        print(f"\t\tUniversity Start Year: {self.state.current_user.university_start_year}")
-        print(f"\t\tUniversity End Year: {self.state.current_user.university_end_year}")
+        print(
+            f"\t\tUniversity Start Year: {self.state.current_user.university_start_year}")
+        print(
+            f"\t\tUniversity End Year: {self.state.current_user.university_end_year}")
 
         print("\tExperience History:")
         num_jobs = len(self.state.current_user.previous_jobs)
         for i in range(0, num_jobs):
             print(f"\t\tJob {i+1}:")
-            print(f"\t\t\tTitle: {self.state.current_user.previous_jobs[i].title}")
-            print(f"\t\t\tEmployer: {self.state.current_user.previous_jobs[i].employer}")
-            print(f"\t\t\tDate Started: {self.state.current_user.previous_jobs[i].date_started}")
-            print(f"\t\t\tDate Ended: {self.state.current_user.previous_jobs[i].date_ended}")
-            print(f"\t\t\tLocation: {self.state.current_user.previous_jobs[i].location}")
-            print(f"\t\t\tDescription: {self.state.current_user.previous_jobs[i].description}")
+            print(
+                f"\t\t\tTitle: {self.state.current_user.previous_jobs[i].title}")
+            print(
+                f"\t\t\tEmployer: {self.state.current_user.previous_jobs[i].employer}")
+            print(
+                f"\t\t\tDate Started: {self.state.current_user.previous_jobs[i].date_started}")
+            print(
+                f"\t\t\tDate Ended: {self.state.current_user.previous_jobs[i].date_ended}")
+            print(
+                f"\t\t\tLocation: {self.state.current_user.previous_jobs[i].location}")
+            print(
+                f"\t\t\tDescription: {self.state.current_user.previous_jobs[i].description}")
+
+
 class PostJob(Page):
     def onLoad(self):
         clear_console()
@@ -580,10 +663,12 @@ class PostJob(Page):
         if (salary == ""):
             self.state.current_page = self.parent
             return
-        new_job = Job(title, description, employer, location, salary, self.state.current_user.username)
+        new_job = Job(title, description, employer, location,
+                      salary, self.state.current_user.username, {})
         self.state.jobs.append(new_job)
         if (not self.state.save_jobs()):
             self.state.jobs.pop()
+
         self.state.current_page = self.parent
 
     def print_content(self):
@@ -664,6 +749,17 @@ class Login(Page):
                     if len(self.state.current_user.pending_requests) != 0:
                         print(
                             "\nYou have a pending request from a user. Please check your pending requests.\n")
+                    new_apps = {}
+                    for key, app in self.state.applications.items():
+                        if app.user == self.state.current_user.username:
+                            job_id = app.job_id
+                            job_exists = bool(filter(lambda job: job.id == job_id, self.state.jobs))
+                            if not job_exists:
+                                print("A job you've applied has been removed!")
+                            else:
+                                new_apps[key] = app
+                    self.state.applications = new_apps
+                    self.state.save_applications()
                     self.input_to_continue()
 
                     #
@@ -732,44 +828,54 @@ class CreateAccount(Page):
 
 class Jobs(Page):
     def print_content(self):
-        print(f"Search for, post, or manage a job/internship opportunity!\n{self.split_star}")
+        print(
+            f"Search for, post, or manage a job/internship opportunity!\n{self.split_star}")
+
     def onLoad(self):
         clear_console()
         self.print_content()
         self.print_menu()
         self.page_select()
 
+
 class ManageJobs(Page):
     def print_content(self):
         print(f"Manage your job postings here!\n{self.split_star}")
+
     def onLoad(self):
-        self.user_jobs = [job for job in self.state.jobs if job.poster == self.state.current_user.username]
+        self.user_jobs = [
+            job for job in self.state.jobs if job.poster == self.state.current_user.username]
         clear_console()
         self.print_content()
         self.menu()
+
     def menu(self):
         num_jobs = len(self.user_jobs)
         print(f"Type the number corresponding to the option you'd like to select.")
         print(f"\t>0. Return To Previous Page")
-        for i in range(0,num_jobs):
+        for i in range(0, num_jobs):
             print(f"\t>{i+1}. {self.user_jobs[i].str()}")
         selection = input("\nEnter your selection here: ")
         selection = "".join(selection.split()).lower()
         select_num = -1
-        try: select_num = int(selection)
-        except: pass
-        if(selection == "0" or selection == "0"):
+        try:
+            select_num = int(selection)
+        except:
+            pass
+        if (selection == "0" or selection == "0"):
             self.state.current_page = self.parent
             return
-        elif(select_num > 0 and select_num <= num_jobs):
+        elif (select_num > 0 and select_num <= num_jobs):
             self.update_job_info(select_num - 1)
             return
         else:
-            print("Invalid selection! Type just the number corresponding to your selection.\n")
+            print(
+                "Invalid selection! Type just the number corresponding to your selection.\n")
             self.input_to_continue()
             self.menu()
+
     def update_job_info(self, job_num):
-        #todo
+        # todo
         job = self.user_jobs[job_num]
         clear_console()
         print(f"Job #{job_num+1} info:")
@@ -779,32 +885,34 @@ class ManageJobs(Page):
         print(f"\t4. Brief Descripton: {job.description}")
         print(f"\t5. Salary: {job.salary}")
         print(f"\t6. Remove Job Listing")
-        selection = input("Enter the number corresponding to the field you wish to edit, or type 0 to return: ")
+        selection = input(
+            "Enter the number corresponding to the field you wish to edit, or type 0 to return: ")
         selection = "".join(selection.split()).lower()
         remove = False
-        try: selection = int(selection)
+        try:
+            selection = int(selection)
         except:
             print("You need to enter a numerical value!")
             self.input_to_continue()
             self.update_job_info(job_num)
-        if(selection == 0):
+        if (selection == 0):
             self.state.current_page = self.parent
-        elif(selection == 1):
+        elif (selection == 1):
             new_title = input("\nEnter a new title: ")
             job.title = new_title
-        elif(selection == 2):
+        elif (selection == 2):
             new_employer = input("\nEnter a new employer: ")
             job.employer = new_employer
-        elif(selection == 3):
+        elif (selection == 3):
             new_location = input("\nEnter a new location:")
             job.location = new_location
-        elif(selection == 4):
+        elif (selection == 4):
             new_description = input("Enter a new brief description:")
             job.description = new_description
-        elif(selection == 5):
+        elif (selection == 5):
             new_salary = input("Enter a new salary for the job: ")
             job.salary = new_salary
-        elif(selection == 6):
+        elif (selection == 6):
             remove = True
         else:
             print("Invalid option!")
@@ -813,24 +921,30 @@ class ManageJobs(Page):
             return
         for i, state_job in enumerate(self.state.jobs):
             if state_job.id == job.id:
-                if(remove):
+                if (remove):
                     self.state.jobs.pop(i)
                 else:
                     self.state.jobs[i] = job
-                self.state.save_jobs()
-                self.state.current_page = self.parent
-                return
+        self.state.save_jobs()
+        self.state.current_page = self.parent
+        return
+
 
 class JobSearch(Page):
-    def __init__(self, title="", login_required = True, state=State(), parent=None):
+    def __init__(self, title="", login_required=True, state=State(), parent=None):
         self.first_load = True
         super(JobSearch, self).__init__(title, login_required, state, parent)
+
     def print_content(self):
         print(f"Search for Jobs/Internships here!\n{self.split_star}")
+
     def onLoad(self):
-        if(self.first_load):
+        if (self.first_load):
             self.first_load = False
             self.jobs_to_display = self.state.jobs.copy()
+        self.applied_jobs = [job for job in self.state.jobs
+                                if self.state.current_user.username
+                                in job.applications.keys()]
         clear_console()
         self.print_content()
         self.input_to_continue()
@@ -841,6 +955,122 @@ class JobSearch(Page):
         self.state.current_user.saved_jobs.append(job)
         for i, state_job in enumerate(self.state.jobs):
             if state_job.id == job.id:
+        self.display_jobs()
+        self.menu()
+
+    def display_jobs(self):
+        has_been_applied_for = ""
+        for i, job in enumerate(self.jobs_to_display):
+            if(job in self.applied_jobs):
+                has_been_applied_for = "(Application Submitted)"
+            else:
+                has_been_applied_for = ""
+            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary} {has_been_applied_for}\n\tDescription: {job.description}")
+        print(f"{self.split_star}")
+
+    def menu(self):
+        print("\t>0. Return To Previous Page")
+        print("\t>1. Apply to a position")
+        print("\t>2. Filter by jobs you've applied for.")
+        print("\t>3. Filter by jobs you haven't applied for.")
+        selection = input(
+            "\nEnter the number corresponding to your selection: ")
+        selection_num = -1
+        try:
+            selection_num = int(selection)
+        except:
+            pass
+        if (selection_num == 0):
+            self.state.current_page = self.parent
+            return
+        elif (selection_num == 1):
+            job_selection = input(
+                "\nEnter the number corresponding to the job you'd like to apply to: ")
+            job_selection_num = -1
+            try:
+                job_selection_num = int(job_selection)
+            except:
+                pass
+            if (job_selection_num-1 >= 0 and job_selection_num-1 < len(self.jobs_to_display)):
+                self.apply(job_selection_num-1)
+            else:
+                print("Invalid job number selected! Please try again.")
+                self.input_to_continue()
+                self.menu()
+            return
+        elif (selection_num == 2):
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if self.state.current_user.username
+                                    in job.applications.keys()]
+            self.onLoad()
+            return
+        elif (selection_num == 3):
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if self.state.current_user.username
+                                    not in job.applications.keys()]
+            self.onLoad()
+            return
+
+    def apply(self, job_id):
+        job = self.jobs_to_display[job_id]
+        if(job.poster == self.state.current_user.username):
+            print("You cannot apply to a job you've posted.")
+            self.input_to_continue()
+            self.onLoad()
+            return
+        if self.state.current_user.username in job.applications.keys():
+            print("You've already applied to this job! Would you like to rescind your application?")
+            print("\t>0. Yes")
+            print("\t>1. No")
+            selection = input("\nEnter the number corresponding to your selection: ")
+            selection_num = -1
+            try:
+                selection_num = int(selection)
+            except:
+                print("Invalid option, try again.")
+                self.input_to_continue()
+                self.apply(job_id)
+                return
+            if(selection_num == 0):
+                print("You've rescinded your application!")
+                self.input_to_continue()
+                job.applications.pop(self.state.current_user.username)
+                for i, jobb in enumerate(self.state.jobs):
+                    if jobb.id == job.id:
+                        self.state.jobs[i] = job
+                self.onLoad()
+                return
+            elif(selection_num == 1):
+                print("You cannot apply to a job you've already applied to.")
+                self.input_to_continue()
+                self.onLoad()
+                return
+            else:
+                print("Invalid option, try again.")
+                self.apply(job_id)
+                return
+        print(f"{self.split_star}\n")
+        grad_date = input("Enter your expected graduation date (mm/dd/yyyy): ")
+        if (grad_date == ''):
+            self.onLoad()
+        start_date = input("Enter your expected start date (mm/dd/yyyy): ")
+        if (start_date == ''):
+            self.onLoad()
+        paragraph = ""
+        new_line = input(
+            "Enter a paragraph describing why you'd be a good fit for this position: \n\t*")
+        while (new_line != ""):
+            paragraph = paragraph + "\n" + new_line
+            new_line = input("\t*")
+        # import pdb; pdb.set_trace()
+        new_application = Application(
+            job.id, self.state.current_user.username, grad_date, start_date, paragraph)
+        self.state.applications[new_application.id] = new_application
+        for i, jobb in enumerate(self.state.jobs):
+            if jobb.id == job.id:
+                job.applications[self.state.current_user.username] = str(
+                    new_application.id)
+
                 self.state.jobs[i] = job
                 self.state.save_jobs()
                 self.state.current_page = self.parent
@@ -860,8 +1090,10 @@ class JobSearch(Page):
     def view_saved(self):
         for job in self.state.current_user.saved_jobs:
 
-        
-        
+       
+        self.onLoad()
+
+
 
 class LearnSkills(Page):
     def print_content(self):
@@ -1544,7 +1776,7 @@ class Friends(Page):
 
     def onLoad(self):
         clear_console()
-        #self.state.current_user = self.state.users[self.state.current_user.username]
+        # self.state.current_user = self.state.users[self.state.current_user.username]
         self.menu()
         pass
 
@@ -1553,7 +1785,7 @@ class Friends(Page):
         self.page_select()
 
     def menu(self):
-        #self.state.current_user = self.state.users[self.state.current_user.username]
+        # self.state.current_user = self.state.users[self.state.current_user.username]
 
         print("Select an option to change on your account or return home:\n")
         print(f"\t0. Return Home")
@@ -1680,42 +1912,55 @@ class Friends(Page):
             print(f"\t{friend}")
             decision = input("View Friend Profile? (y/n)")
             if (decision == "y" or decision == "yes"):
-                friend_profile = input("Type the username of the friend's porifle you wish to view): ")
+                friend_profile = input(
+                    "Type the username of the friend's porifle you wish to view): ")
                 if (friend_profile in self.state.current_user.friends):
-                    self.view_friend_profile(friend_profile)                
+                    self.view_friend_profile(friend_profile)
 
-        remove_friendq = input("Do you want to remove one of these connections? (y/n) ")
-        if(remove_friendq == "y" or remove_friendq == "yes"):
-            friend_to_remove = input("Type the username of the connection you wish to remove (Usernames are case sensitive): ")
-            if(friend_to_remove in self.state.current_user.friends):
+        remove_friendq = input(
+            "Do you want to remove one of these connections? (y/n) ")
+        if (remove_friendq == "y" or remove_friendq == "yes"):
+            friend_to_remove = input(
+                "Type the username of the connection you wish to remove (Usernames are case sensitive): ")
+            if (friend_to_remove in self.state.current_user.friends):
                 self.remove_friend(friend_to_remove)
             else:
                 input("You are not friends with that user!")
         self.input_to_continue()
-    
+
     def view_friend_profile(self, other_user):
         print(f"\tFirst Name: {self.state.users[other_user].first_name}")
         print(f"\tLast Name: {self.state.users[other_user].last_name}")
         print(f"\tTitle: {self.state.users[other_user].title}")
-        about_display = "\t\t" + self.state.users[other_user].about.replace('\n','\n\t\t')
+        about_display = "\t\t" + \
+            self.state.users[other_user].about.replace('\n', '\n\t\t')
         print(f"\tAbout: \n{about_display}")
         print(f"\tSummary of their work experience is:")
-        experience_display = "\t\t" + self.state.users[other_user].experience.replace('\n','\n\t\t')
+        experience_display = "\t\t" + \
+            self.state.users[other_user].experience.replace('\n', '\n\t\t')
         print(experience_display)
         print("\tEducation:")
         print(f"\t\tUniversity: {self.state.users[other_user].university}")
         print(f"\t\tMajor/Degree: {self.state.users[other_user].major}")
-        print(f"\t\tUniversity Start Year: {self.state.users[other_user].university_start_year}")
-        print(f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
+        print(
+            f"\t\tUniversity Start Year: {self.state.users[other_user].university_start_year}")
+        print(
+            f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
 
         print("\tExperience History:")
         for i in range(0, Util.MAXIMUM_EXPERIENCE_COUNT):
             print(f"\t\tJob {i+1}:")
-            print(f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
-            print(f"\t\t\tEmployer: {self.state.users[other_user].previous_jobs[i].employer}")
-            print(f"\t\t\tDate Started: {self.state.users[other_user].previous_jobs[i].date_started}")
-            print(f"\t\t\tDate Ended: {self.state.users[other_user].previous_jobs[i].date_ended}")
-            print(f"\t\t\tLocation: {self.state.users[other_user].previous_jobs[i].location}")
-            print(f"\t\t\tDescription: {self.state.users[other_user].previous_jobs[i].description}")
-        
+            print(
+                f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
+            print(
+                f"\t\t\tEmployer: {self.state.users[other_user].previous_jobs[i].employer}")
+            print(
+                f"\t\t\tDate Started: {self.state.users[other_user].previous_jobs[i].date_started}")
+            print(
+                f"\t\t\tDate Ended: {self.state.users[other_user].previous_jobs[i].date_ended}")
+            print(
+                f"\t\t\tLocation: {self.state.users[other_user].previous_jobs[i].location}")
+            print(
+                f"\t\t\tDescription: {self.state.users[other_user].previous_jobs[i].description}")
+
         self.input_to_continue()
