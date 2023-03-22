@@ -80,6 +80,19 @@ class State:
         else:
             print("All permitted jobs have been created, please come back later.\n")
             return False
+        
+    def saved_jobs(self):
+        if len(self.users) <= Util.MAXIMUM_JOB_COUNT:
+            with open(self.jobs_saved, 'w') as target:
+                writer = csv.writer(target)
+                for job in self.saved_jobs:
+                    saved_jobs_list = job.list()
+                    writer.writerow(saved_jobs_list)
+            target.close()
+            return True
+        else:
+            print("No jobs have been saved, please come back later.\n")    
+            return False        
 
     def load_jobs(self):
         try:
