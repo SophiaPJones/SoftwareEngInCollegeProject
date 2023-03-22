@@ -1086,9 +1086,11 @@ class JobSearch(Page):
         # save the changes to the system
         self.state.save_jobs()
         print("\nThis job is no longer in your saved list.")
-        return   
-    def view_saved(self):
-        for job in self.state.current_user.saved_jobs:
+        return  
+     
+    #def view_saved(self):
+        #for job in self.state.current_user.saved_jobs:
+        #need to flesh out functionality for user to view list of saved jobs
 
        
         self.onLoad()

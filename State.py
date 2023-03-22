@@ -81,7 +81,6 @@ class State:
             print("All permitted jobs have been created, please come back later.\n")
             return False
         
-
     def saved_jobs(self):
         if len(self.users) <= Util.MAXIMUM_JOB_COUNT:
             with open(self.jobs_saved, 'w') as target:
