@@ -136,7 +136,7 @@ def main():
     state = State()
     state.account_file_name = 'accounts.csv'
     state.job_file_name = 'jobs.csv'
-    #state.jobs_saved = 'savedjobs.csv'
+    state.jobs_saved = 'savedjobs.csv'
     #need to have different state.job_file_name for saved jobs as to not overwrite jobs.csv
     state.friends_file_name = 'friends.csv'
     state.experience_file_name = 'experience.csv'

@@ -36,7 +36,7 @@ class User:
         self.experience = experience
         self.education = education
         self.previous_jobs = []
-        self.saved_jobs = []
+        self.saved_jobs = []x
         '''
         Every student will have a list of friends on InCollege that they have connected with. Initially this list will 
         be empty.'''
