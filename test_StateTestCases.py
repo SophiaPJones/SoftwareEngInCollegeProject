@@ -339,8 +339,29 @@ class StateTestCases(TestCase):
         jobSearchPage = JobSearch(state=newState)
         jobSearchPage.jobs_to_display = [job]
         self.monkeypatch.setattr(
-            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n01/01/1991\n02/01/1991\nBecause I rock still\n\n0\n'))  # stdin
+            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n1\n\n0\n'))  # stdin
         jobSearchPage.apply(0)
         assert len(job.applications) == 1  # Job has a applicant
         jobSearchPage.apply(0)
         assert len(job.applications) == 1  # Applying twice did not work
+
+    def test_rescind_application(self):
+        newState = State()
+        user1 = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education1", "2019", "2023")
+        user2 = User("First", "Last", "flast", "Password2!", "I am bigger success", True, True, True, 0, "Biology", "University of South Florida",
+                     "Student", "This is the about", "This is the experience", "This is the Education2", "2020", "2024")
+        job = Job("Job 1", "Description 1", "Employer 1",
+                  "Location 1", "60000", user1.username, {})
+        assert job.applications == {}  # Job has no applicants
+        newState.current_user = user2
+        newState.jobs = [job]
+        newState.job_file_name = 'jobFileTest.csv'
+        jobSearchPage = JobSearch(state=newState)
+        jobSearchPage.jobs_to_display = [job]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('01/01/1991\n02/01/1991\nBecause I rock\n\n0\n0\n\n0\n'))  # stdin
+        jobSearchPage.apply(0)
+        assert len(job.applications) == 1  # Job has a applicant
+        jobSearchPage.apply(0)
+        assert len(job.applications) == 0  # Applying twice did not work
