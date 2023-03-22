@@ -947,7 +947,8 @@ class JobSearch(Page):
                                 in job.applications.keys()]
         clear_console()
         self.print_content()
-        self.input_to_continue()
+        self.display_jobs()
+        self.menu()
         #functionality to save jobs??
     def saved_jobs(self, job):
         job = self.user_jobs[job_num]
@@ -955,6 +956,7 @@ class JobSearch(Page):
         self.state.current_user.saved_jobs.append(job)
         for i, state_job in enumerate(self.state.jobs):
             if state_job.id == job.id:
+                pass
         self.display_jobs()
         self.menu()
 
