@@ -5,6 +5,7 @@ MINIMUM_PASSWORD_LENGTH = 8
 MAXIMUM_PASSWORD_LENGTH = 12
 MAXIMUM_USER_COUNT = 10
 MAXIMUM_JOB_COUNT = 10
+MAXIMUM_MESSAGE_COUNT = 250  # Arbitrary number. Not in requirements
 MAXIMUM_FRIEND_COUNT = 10
 REPLACE_NEWLINE_CHAR = '\u2063'
 REPLACE_COMMA_CHAR = '\u2064'
@@ -35,6 +36,7 @@ def clear_console():
         os.system('cls')
     else:
         os.system('clear')
+
 
 def format_words(string):
     return string.title()
