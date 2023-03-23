@@ -20,18 +20,29 @@ def initialize_page_tree(state):
         title="Create Account", state=state, login_required=False)
     state.root.children["Job Search/Management"] = Jobs(
         title="Job Search", state=state, login_required=False, parent=state.root)
+
+    state.root.children["Messaging"] = Messaging(
+        title="Messaging", state=state, login_required=True)
+
     state.root.children["Find Someone Who Can Help!"] = FindUser(
         title="Find a User", state=state, login_required=False)
+
+    p = state.root.children["Messaging"]
+    p.children = {"Inbox": Inbox(
+        title="Inbox", state=state, parent=p),
+        "Send a message": SendMessage(
+        title="Send a message", state=state, parent=p
+    )}
 
     p = state.root.children["Job Search/Management"]
     p.children = {"Post a Job": PostJob(
         title="Post a Job", state=state, parent=p),
-                  "Manage Your Job Postings": ManageJobs(
-                      title="Manage your Jobs", state=state, parent=p
-                  ),
-                  "Search for Job/Internship": JobSearch(
-                      title = "Search for a Job/Internship", state=state, parent=p
-                  )}
+        "Manage Your Job Postings": ManageJobs(
+        title="Manage your Jobs", state=state, parent=p
+    ),
+        "Search for Job/Internship": JobSearch(
+        title="Search for a Job/Internship", state=state, parent=p
+    )}
 
     state.root.children['Useful Links'] = UsefulLinks(
         title="Useful Links", state=state, parent=state.root, login_required=False)
@@ -62,7 +73,7 @@ def initialize_page_tree(state):
         'Guest Controls': [],  # Temporary
         'Languages': Language(title='Languages', state=state, parent=p, login_required=True)
 
-    }       
+    }
 
     # Replace temporary value for Guest Controls
     state.root.children['InCollege Important Links'].children["Guest Controls"] = (GuestControls(
@@ -97,30 +108,23 @@ def initialize_page_tree(state):
     state.root.children["Manage Profile"] = ManageProfile(
         title="Manage Profile", state=state, login_required=True)
     p = state.root.children["Manage Profile"]
-    p.children = {"Change Profile Name": ChangeProfileName(title = 'Change Profile Name', state=state, parent=p, login_required = True),
-                  "Change Password": ChangePassword(title="Change Password", state=state,parent=p,login_required=True),
-                  "Change Title": ChangeTitle(title="Change Title", state=state, parent=p, login_required = True),
+    p.children = {"Change Profile Name": ChangeProfileName(title='Change Profile Name', state=state, parent=p, login_required=True),
+                  "Change Password": ChangePassword(title="Change Password", state=state, parent=p, login_required=True),
+                  "Change Title": ChangeTitle(title="Change Title", state=state, parent=p, login_required=True),
                   "Change Success Story": ChangeSuccessStory(title="Change Success Story", state=state, parent=p, login_required=True),
                   "Change Education Information": ChangeEducationInfo(title="Change Education Info", state=state, parent=p, login_required=True),
                   "Change About Me": ChangeAboutMe(title="Change About Me", state=state, parent=p, login_required=True),
                   "Change Experience Summary": ChangeExperienceSummary(title="Change Experience Summary", state=state, parent=p, login_required=True),
-                  "Change Experience History": ChangeExperienceInfo(title="Change Experience History", state=state, parent=p, login_required = True)}
+                  "Change Experience History": ChangeExperienceInfo(title="Change Experience History", state=state, parent=p, login_required=True)}
 
     # add one more for searchStudent
     # that has 3 children, one for each search type
-    # bby last name, by university, by major    
+    # bby last name, by university, by major
     state.root.children["Search Students"] = SearchStudents(
         title="Search Students", state=state, login_required=True)
 
-    state.root.children["Show my network"] = Friends(
+    state.root.children["Show my network (Friends)"] = Friends(
         title="Friends", state=state, login_required=True)
-    
-
-    
-    
-    
-
-
 
     # add one more for searchStudent
     # that has 3 children, one for each search type
@@ -128,14 +132,16 @@ def initialize_page_tree(state):
     state.root.children["Search Students"] = SearchStudents(
         title="Search Students", state=state, login_required=True)
 
-    state.root.children["Show my network"] = Friends(
+    state.root.children["Show my network (Friends)"] = Friends(
         title="Friends", state=state, login_required=True)
+
 
 def main():
     # load users
     state = State()
     state.account_file_name = 'accounts.csv'
     state.job_file_name = 'jobs.csv'
+    state.message_file_name = 'messages.csv'
     state.friends_file_name = 'friends.csv'
     state.experience_file_name = 'experience.csv'
     state.application_file_name = 'applications.csv'
@@ -146,15 +152,15 @@ def main():
     state.load_friends()
     state.load_experience()
     state.load_applications()
+    state.load_messages()
     initialize_page_tree(state)
     while (state.application_active):
         if (state.current_page == None):
             state.current_page = state.root
         state.current_page.onLoad()
-    
+
     state.save_accounts()
 
 
 if __name__ == "__main__":
     main()
-

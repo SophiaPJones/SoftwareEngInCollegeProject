@@ -12,6 +12,7 @@ from State import *
 from User import *
 from Util import *
 from Job import *
+from Message import *
 from Application import *
 import random
 
@@ -639,44 +640,6 @@ class ManageProfile(Page):
                 f"\t\t\tDescription: {self.state.current_user.previous_jobs[i].description}")
 
 
-class PostJob(Page):
-    def onLoad(self):
-        clear_console()
-        self.print_content()
-        title = input("\tEnter job title: ")
-        if (title == ""):
-            self.state.current_page = self.parent
-            return
-        description = input("\tEnter a brief description: ")
-        if (description == ""):
-            self.state.current_page = self.parent
-            return
-        employer = input("\tEnter the employer organization: ")
-        if (employer == ""):
-            self.state.current_page = self.parent
-            return
-        location = input("\tEnter the job location: ")
-        if (location == ""):
-            self.state.current_page = self.parent
-            return
-        salary = input("\tEnter the salary: ")
-        if (salary == ""):
-            self.state.current_page = self.parent
-            return
-        new_job = Job(title, description, employer, location,
-                      salary, self.state.current_user.username, {})
-        self.state.jobs.append(new_job)
-        if (not self.state.save_jobs()):
-            self.state.jobs.pop()
-
-        self.state.current_page = self.parent
-
-    def print_content(self):
-        print(
-            f"Post a job opportunity for inCollege users to apply to! Enter nothing on any of the options to cancel and return home.\n{self.split_star}\n")
-        pass
-
-
 class FindUser(Page):
     def onLoad(self):
         clear_console()
@@ -749,11 +712,20 @@ class Login(Page):
                     if len(self.state.current_user.pending_requests) != 0:
                         print(
                             "\nYou have a pending request from a user. Please check your pending requests.\n")
+
+                    # notificaiton for message(s) waiting in inbox
+                    for message in self.state.messages:
+                        if (message.receiver == self.state.current_user.username):
+                            print(
+                                "You have 1 or more messages waiting for you! Check your message inbox")
+                            break
+
                     new_apps = {}
                     for key, app in self.state.applications.items():
                         if app.user == self.state.current_user.username:
                             job_id = app.job_id
-                            job_exists = bool(filter(lambda job: job.id == job_id, self.state.jobs))
+                            job_exists = bool(
+                                filter(lambda job: job.id == job_id, self.state.jobs))
                             if not job_exists:
                                 print("A job you've applied has been removed!")
                             else:
@@ -803,6 +775,11 @@ class CreateAccount(Page):
         not_university = input("Enter your university: ")
         university = Util.format_words(not_university)
 
+        user_is_plus = input(
+            "Would you like to pay $10/month to unlock 'plus' featuers? (Includes messaging non-friends) [y/n]: ")
+        while (user_is_plus not in ["y", "yes", "n", "no"]):
+            user_is_plus = input("Please type 'y' or 'n': ")
+
         password = input("Enter the new account's password: ")
         passwordValid = Util.validate_password(password)
         if passwordValid:
@@ -812,8 +789,12 @@ class CreateAccount(Page):
                 self.input_to_continue()
                 self.state.current_page = self.state.root
             else:
-                user = User(first_name, last_name, username,
-                            password, major=major, university=university)
+                if user_is_plus in ["y", "yes"]:
+                    user = User(first_name, last_name, username,
+                                password, major=major, university=university, user_tier="plus")
+                else:
+                    user = User(first_name, last_name, username,
+                                password, major=major, university=university, user_tier="standard")
                 self.state.users[username] = user
 
                 if (self.state.save_accounts() == True):
@@ -826,6 +807,156 @@ class CreateAccount(Page):
             self.onLoad()
 
 
+class Messaging(Page):
+    def print_content(self):
+        print(
+            f"Read or send messages!\n{self.split_star}")
+
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        self.print_menu()
+        self.page_select()
+
+
+class Inbox(Page):
+    loaded_messages = []
+
+    def print_content(self):
+        print(f"Your messages:!\n{self.split_star}")
+        i = 0
+        for message in self.loaded_messages:
+            print(str(i + 1) + ".) From " + message.sender)
+            i += 1
+        print()
+
+    def load_messages(self):
+        for message in self.state.messages:
+            if (message.receiver == self.state.current_user.username):
+                self.loaded_messages.append(message)
+
+    def onLoad(self):
+        self.loaded_messages = []
+        self.load_messages()
+        clear_console()
+        self.print_content()
+        self.menu()
+
+    def menu(self):
+        print(f"Type the number corresponding to the option you'd like to select.")
+        print(f"\t0.) Return To Previous Page")
+        print(f"\t1.) Read a message")
+        selection = input("\nEnter your selection here: ")
+        selection = "".join(selection.split()).lower()
+        select_num = -1
+        try:
+            select_num = int(selection)
+        except:
+            pass
+        if (selection == "0"):
+            self.state.current_page = self.parent
+            return
+        elif (selection == "1"):
+            message_to_read = input(
+                "Choose which message you would like to read: ")
+            try:
+                remove = False
+                # will check that input is integer
+                message_index = int(message_to_read) - 1
+                print("\nFrom: " + self.loaded_messages[message_index].sender)
+                print("\nTo: " + self.loaded_messages[message_index].receiver)
+                print("\nMessage: " +
+                      self.loaded_messages[message_index].message + "\n")
+                user_selection = input(
+                    "What would you like to do? [ delete | keep | reply ]: ")
+                while (user_selection not in ["delete", "keep", "reply"]):
+                    user_selection = input("Type delete, keep, or reply: ")
+
+                if (user_selection == "keep"):
+                    return
+                elif (user_selection == "delete"):
+                    remove = True
+                elif (user_selection == "reply"):
+                    # For special case when sender is plus but receiver is not.
+                    # In this case the receiver can still respond
+                    message = input("Enter your reply: ")
+                    new_message = Message(
+                        self.state.current_user.username, self.loaded_messages[message_index].sender, message)
+                    self.state.messages.append(new_message)
+                    if (not self.state.save_messages()):
+                        self.state.messages.pop()
+                    else:
+                        print("Reply sent")
+                        self.input_to_continue()
+
+                for i, state_message in enumerate(self.state.messages):
+                    if state_message.id == self.loaded_messages[message_index].id:
+                        if (remove):
+                            self.state.messages.pop(i)
+                        else:
+                            self.state.messages[i] = self.loaded_messages[message_index]
+                self.state.save_messages()
+                return
+
+            except Exception as e:
+                print(e)
+                print("Error")
+                self.input_to_continue()
+            return
+        else:
+            print(
+                "Invalid selection! Type just the number corresponding to your selection.\n")
+            self.input_to_continue()
+            clear_console()
+            self.onLoad()
+
+
+class SendMessage(Page):
+    def print_content(self):
+        print(f"Send a message!\n{self.split_star}")
+        print("You may send a message to the following people:")
+        if self.state.current_user.user_tier != "plus":
+            for friend in self.state.current_user.friends:
+                print("\t" + friend)
+        else:
+            for user in self.state.users:
+                if user != self.state.current_user.username:
+                    print("\t" + user)
+        print()
+        self.send_message()
+
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+
+    def send_message(self):
+        user_selection = input("Who would you like to send a message to?: ")
+        if (user_selection in self.state.users):
+            if (user_selection in self.state.current_user.friends or self.state.current_user.user_tier == "plus"):
+                # allowed to send message to that user
+                message = input("Enter your message: ")
+                new_message = Message(
+                    self.state.current_user.username, user_selection, message)
+                self.state.messages.append(new_message)
+                if (not self.state.save_messages()):
+                    self.state.messages.pop()
+                else:
+                    print("\nMessage sent")
+                    self.input_to_continue()
+
+                self.state.current_page = self.parent
+            else:
+                print(
+                    "I'm sorry, you are not friends with that person. Make sure you're friends or pay for plus!")
+                self.input_to_continue()
+        else:
+            if (user_selection == ""):
+                self.state.current_page = self.state.current_page.parent
+            else:
+                print("Sorry, that is not a valid option. Please choose for the list above or press enter to return to the previous screen")
+                self.input_to_continue()
+
+
 class Jobs(Page):
     def print_content(self):
         print(
@@ -836,6 +967,44 @@ class Jobs(Page):
         self.print_content()
         self.print_menu()
         self.page_select()
+
+
+class PostJob(Page):
+    def onLoad(self):
+        clear_console()
+        self.print_content()
+        title = input("\tEnter job title: ")
+        if (title == ""):
+            self.state.current_page = self.parent
+            return
+        description = input("\tEnter a brief description: ")
+        if (description == ""):
+            self.state.current_page = self.parent
+            return
+        employer = input("\tEnter the employer organization: ")
+        if (employer == ""):
+            self.state.current_page = self.parent
+            return
+        location = input("\tEnter the job location: ")
+        if (location == ""):
+            self.state.current_page = self.parent
+            return
+        salary = input("\tEnter the salary: ")
+        if (salary == ""):
+            self.state.current_page = self.parent
+            return
+        new_job = Job(title, description, employer, location,
+                      salary, self.state.current_user.username, {})
+        self.state.jobs.append(new_job)
+        if (not self.state.save_jobs()):
+            self.state.jobs.pop()
+
+        self.state.current_page = self.parent
+
+    def print_content(self):
+        print(
+            f"Post a job opportunity for inCollege users to apply to! Enter nothing on any of the options to cancel and return home.\n{self.split_star}\n")
+        pass
 
 
 class ManageJobs(Page):
@@ -862,7 +1031,7 @@ class ManageJobs(Page):
             select_num = int(selection)
         except:
             pass
-        if (selection == "0" or selection == "0"):
+        if (selection == "0"):
             self.state.current_page = self.parent
             return
         elif (select_num > 0 and select_num <= num_jobs):
@@ -943,8 +1112,8 @@ class JobSearch(Page):
             self.first_load = False
             self.jobs_to_display = self.state.jobs.copy()
         self.applied_jobs = [job for job in self.state.jobs
-                                if self.state.current_user.username
-                                in job.applications.keys()]
+                             if self.state.current_user.username
+                             in job.applications.keys()]
         clear_console()
         self.print_content()
         self.display_jobs()
@@ -953,7 +1122,7 @@ class JobSearch(Page):
     def display_jobs(self):
         has_been_applied_for = ""
         for i, job in enumerate(self.jobs_to_display):
-            if(job in self.applied_jobs):
+            if (job in self.applied_jobs):
                 has_been_applied_for = "(Application Submitted)"
             else:
                 has_been_applied_for = ""
@@ -1005,16 +1174,18 @@ class JobSearch(Page):
 
     def apply(self, job_id):
         job = self.jobs_to_display[job_id]
-        if(job.poster == self.state.current_user.username):
+        if (job.poster == self.state.current_user.username):
             print("You cannot apply to a job you've posted.")
             self.input_to_continue()
             self.onLoad()
             return
         if self.state.current_user.username in job.applications.keys():
-            print("You've already applied to this job! Would you like to rescind your application?")
+            print(
+                "You've already applied to this job! Would you like to rescind your application?")
             print("\t>0. Yes")
             print("\t>1. No")
-            selection = input("\nEnter the number corresponding to your selection: ")
+            selection = input(
+                "\nEnter the number corresponding to your selection: ")
             selection_num = -1
             try:
                 selection_num = int(selection)
@@ -1023,7 +1194,7 @@ class JobSearch(Page):
                 self.input_to_continue()
                 self.apply(job_id)
                 return
-            if(selection_num == 0):
+            if (selection_num == 0):
                 print("You've rescinded your application!")
                 self.input_to_continue()
                 job.applications.pop(self.state.current_user.username)
@@ -1032,7 +1203,7 @@ class JobSearch(Page):
                         self.state.jobs[i] = job
                 self.onLoad()
                 return
-            elif(selection_num == 1):
+            elif (selection_num == 1):
                 print("You cannot apply to a job you've already applied to.")
                 self.input_to_continue()
                 self.onLoad()

@@ -2,6 +2,7 @@
 import csv
 import User
 import Job
+import Message
 import Util
 import Application
 import ast
@@ -13,6 +14,7 @@ class State:
         self.users = {}
         self.account_file_name = ''
         self.job_file_name = ''
+        self.message_file_name = ''
         self.friends_file_name = ''
         self.experience_file_name = ''
         self.application_file_name = ''
@@ -21,6 +23,7 @@ class State:
         self.current_page = None
         self.root = None
         self.jobs = []
+        self.messages = []
         self.success_stories = {}
         self.applications = {}  # map of application IDs to Application instances
 
@@ -43,6 +46,8 @@ class State:
             return True
         except:
             # No accounts file
+            print("account load failed")
+            input()
             return False
 
     def save_accounts(self):
@@ -101,6 +106,35 @@ class State:
         except:
             return False
 
+    def save_messages(self):
+        if len(self.users) <= Util.MAXIMUM_MESSAGE_COUNT:  # maybe self.jobs
+            with open(self.message_file_name, 'w', encoding="utf8") as target:
+                writer = csv.writer(target)
+                for message in self.messages:
+                    message_list = message.list()
+                    writer.writerow(message_list)
+            target.close()
+            return True
+        else:
+            print("All permitted jobs have been created, please come back later.\n")
+            return False
+
+    def load_messages(self):
+        try:
+            with open(self.message_file_name, encoding="utf8") as csvFile:
+                message_list = csv.reader(csvFile, delimiter=',')
+                for message in message_list:
+                    if (message == []):
+                        continue
+                    self.messages.append(Message.Message(
+                        message[1],
+                        message[2],
+                        message[3]
+                    ))
+                return True
+        except:
+            return False
+
     def load_success_stories(self):
         if self.users != {}:
             self.success_stories = {key: val.success_story for key,
@@ -131,9 +165,10 @@ class State:
         try:
             # open the file
             with open(self.friends_file_name, 'r', encoding="utf8") as csvFile:
-                # lines = list(line for line in (l.strip() for l in csvFile) if line)  # skip blank lines
-                friend_list = csv.reader(lines, delimiter=',')
+                friend_list = csv.reader(csvFile, delimiter=',')
                 for friend_ in friend_list:
+                    if (friend_ == []):  # skip blank line
+                        continue
                     # get the username
                     username = friend_[0]
 
@@ -160,6 +195,8 @@ class State:
             with open(self.experience_file_name, 'r', encoding="utf8") as csvFile:
                 experiences = csv.reader(csvFile, delimiter=',')
                 for exp in experiences:
+                    if (exp == []):  # skip blank line
+                        continue
                     username = exp[0]
                     if username in self.users:
                         self.users[username].previous_jobs.append(User.JobExperience(
@@ -199,6 +236,8 @@ class State:
             with open(self.application_file_name, 'r', encoding="utf8") as csvFile:
                 applications = csv.reader(csvFile, delimiter=',')
                 for key, app in applications.items():
+                    if (app == []):  # skip blank line
+                        continue
                     app_id = key
                     self.applications[app_id] = Application(
                         app[1], app[2], app[3], app[4], app[5])
