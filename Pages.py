@@ -2092,7 +2092,7 @@ class Friends(Page):
             f"\t\tUniversity End Year: {self.state.users[other_user].university_end_year}")
 
         print("\tExperience History:")
-        for i in range(0, Util.MAXIMUM_EXPERIENCE_COUNT):
+        for i in range(0, len(self.state.users[other_user].previous_jobs)):
             print(f"\t\tJob {i+1}:")
             print(
                 f"\t\t\tTitle: {self.state.users[other_user].previous_jobs[i].title}")
