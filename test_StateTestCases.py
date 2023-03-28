@@ -365,3 +365,150 @@ class StateTestCases(TestCase):
         assert len(job.applications) == 1  # Job has a applicant
         jobSearchPage.apply(0)
         assert len(job.applications) == 0  # Applying twice did not work
+
+    def test_creating_account(self):
+        newState = State()
+        newState.account_file_name = 'accounts.csv'
+        user = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science",
+                    "University of South Florida",
+                    "Student", "This is the about", "This is the experience", "This is the Education", "2020", "2024")
+
+        createAccountPage = CreateAccount(state=newState)
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('Alex\nHathway\nalexhathway\nCS\nMIT\ny\nABCabc123!\n\n'))  # stdin
+        createAccountPage.create_new_account()
+        assert newState.users["alexhathway"].user_tier == "plus"
+
+    def test_send_message_standard(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "Username1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].friends.append("UserName1")
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+        assert len(newState.messages) > 0
+
+    def test_send_message_plus(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "Username1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].user_tier = "plus"
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+        assert len(newState.messages) > 0
+
+    def test_fail_send_message_non_friend_standard(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "Username1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+        assert len(newState.messages) == 0
+
+    def test_receive_message(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "UserName1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].user_tier = "plus"
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+
+        newState.current_user = newState.users["UserName1"]
+        inboxPage = Inbox(state=newState)
+        inboxPage.load_messages()
+        assert len(inboxPage.loaded_messages) > 0
+
+    def test_keep_inbox_message(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "UserName1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].user_tier = "plus"
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+
+        newState.current_user = newState.users["UserName1"]
+        inboxPage = Inbox(state=newState)
+        inboxPage.load_messages()
+        assert len(inboxPage.loaded_messages) > 0
+
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('1\n1\nkeep\n\n'))  # stdin
+
+        assert len(inboxPage.loaded_messages) > 0
+
+    def test_delete_inbox_message(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "UserName1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].user_tier = "plus"
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+
+        newState.current_user = newState.users["UserName1"]
+        inboxPage = Inbox(state=newState)
+        inboxPage.load_messages()
+        assert len(inboxPage.loaded_messages) > 0
+
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('1\n1\ndelete\n\n'))  # stdin
+
+        assert len(newState.messages) == 1
+
+    def test_reply_inbox_message(self):
+        newState = State()
+        newState.message_file_name = 'messages.csv'
+        newState.users["UserName1"] = User(
+            "first", "second", "UserName1", "Password1!")
+        newState.users["UserName2"] = User(
+            "first", "second", "Username2", "Password1!")
+        newState.users["UserName2"].user_tier = "plus"
+        newState.current_user = newState.users["UserName2"]
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('UserName1\nHello World\n\n\n'))  # stdin
+        sendMessagePage = SendMessage(state=newState)
+        sendMessagePage.send_message()
+
+        newState.current_user = newState.users["UserName1"]
+        inboxPage = Inbox(state=newState)
+        inboxPage.load_messages()
+        assert len(inboxPage.loaded_messages) > 0
+
+        self.monkeypatch.setattr(
+            'sys.stdin', io.StringIO('1\n1\nreply\nHello Back\n\n'))  # stdin
+        assert len(newState.messages) == 1
