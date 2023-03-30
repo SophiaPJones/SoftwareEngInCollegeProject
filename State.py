@@ -44,8 +44,9 @@ class State:
                         *account)  # Uni end year
             # self.load_friends()
             return True
-        except:
+        except Exception as e:
             # No accounts file
+            print(e)
             print("account load failed")
             input()
             return False
