@@ -104,6 +104,12 @@ class Home(Page):
         self.page_select()
 
     def print_content(self):
+
+        #### Notification if no accounts exist ####
+        if (self.state.users == {}):
+            print("Don't forget to create a profile")
+            self.input_to_continue()
+
         welcome_message = "Welcome to inCollege!" if self.state.current_user == None else f"Welcome to inCollege, {self.state.current_user.username}!"
         print(f"{self.split_star}\n\n{welcome_message}\n\n{self.split_tilde}")
         if (self.state.success_stories != {}):
@@ -708,10 +714,41 @@ class Login(Page):
                     print(f"\nSuccessfully logged in as {username}!")
                     self.state.current_user = self.state.users[username]
 
+                    #### Login Notifications ####
+                    clear_console()
+                    print(
+                        f"{self.split_tilde}Login Notification{self.split_tilde}\n")
+
+                    # if users hasn't applied for job in 7 days remind them
+                    seven_days_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+                    last_application_date = datetime.datetime.strptime(
+                        self.state.current_user.last_application_date, "%Y-%m-%d %H:%M:%S")
+                    time_delta = seven_days_ago - last_application_date
+                    if (time_delta.days >= 7):
+                        print(
+                            "\nRemember - you're going to want to have a job when you graduate. Make sure that you start to apply for jobs today!\n")
+
+                    # tell user about new users since their last login
+                    for new_user in self.state.current_user.new_users.split(","):
+                        if (new_user != ""):
+                            print(new_user + " has joined InCollege")
+                    self.state.current_user.new_users = ""
+                    self.state.save_accounts()  # reset user notification list
+
+                    # tell user about new jobs since their last login
+                    for new_job in self.state.current_user.new_jobs.split(","):
+                        if (new_job != ""):
+                            print("A new job '" + new_job + "' has been posted")
+                    self.state.current_user.new_jobs = ""
+                    self.state.save_accounts()  # reset user notification list
+
                     # if there is some pending request, show to the user there is a pending request
                     if len(self.state.current_user.pending_requests) != 0:
-                        print(
-                            "\nYou have a pending request from a user. Please check your pending requests.\n")
+                        if len(self.state.current_user.pending_requests) == 1:
+                            print(
+                                "\nYou have a pending request from a user. Please check your pending requests.\n")
+                        else:
+                            print("\nYou have messages waiting for you\n")
 
                     # notificaiton for message(s) waiting in inbox
                     for message in self.state.messages:
@@ -727,7 +764,7 @@ class Login(Page):
                             job_exists = bool(
                                 filter(lambda job: job.id == job_id, self.state.jobs))
                             if not job_exists:
-                                print("A job you've applied has been removed!")
+                                print("A job that you applied for has been deleted")
                             else:
                                 new_apps[key] = app
                     self.state.applications = new_apps
@@ -796,6 +833,17 @@ class CreateAccount(Page):
                     user = User(first_name, last_name, username,
                                 password, major=major, university=university, user_tier="standard")
                 self.state.users[username] = user
+
+                #### Create notification for all current users telling them a new account has been created (epic #8) ####
+
+                for user in self.state.users:
+                    if self.state.users[user].username != username:
+                        if (self.state.users[user].new_users == ""):
+                            self.state.users[user].new_users = first_name + \
+                                " " + last_name
+                        else:
+                            self.state.users[user].new_users += "," + \
+                                first_name + " " + last_name
 
                 if (self.state.save_accounts() == True):
                     print("\nAccount Created Successfully")
@@ -959,10 +1007,18 @@ class SendMessage(Page):
 
 class Jobs(Page):
     def print_content(self):
+
+        #### Notification for number of jobs applied for ####
+        print(f"You have currently applied for {len(self.applied_jobs)} jobs")
+        self.input_to_continue()
+
         print(
             f"Search for, post, or manage a job/internship opportunity!\n{self.split_star}")
 
     def onLoad(self):
+        self.applied_jobs = [job for job in self.state.jobs
+                             if self.state.current_user.username
+                             in job.applications.keys()]
         clear_console()
         self.print_content()
         self.print_menu()
@@ -996,6 +1052,16 @@ class PostJob(Page):
         new_job = Job(title, description, employer, location,
                       salary, self.state.current_user.username, {})
         self.state.jobs.append(new_job)
+
+        #### Create notification for all current users telling them a new account has been created (epic #8) ####
+
+        for user in self.state.users:
+            if (self.state.users[user].new_jobs == ""):
+                self.state.users[user].new_jobs = title
+            else:
+                self.state.users[user].new_jobs += "," + title
+        self.state.save_accounts()
+
         if (not self.state.save_jobs()):
             self.state.jobs.pop()
 

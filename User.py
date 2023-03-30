@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import Util
+import datetime
 
 
 class JobExperience:
@@ -25,7 +26,8 @@ class User:
                  targeted_advertising=True, language=0,
                  major="", university="", title="",
                  about="", experience="", education="",
-                 university_start_year="", university_end_year="", user_tier="standard"):
+                 university_start_year="", university_end_year="", user_tier="standard",
+                 last_application_date="2000-01-01 00:00:00", new_jobs="", new_users=""):  # date used that is definitely > 7 days old
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -51,10 +53,13 @@ class User:
         self.university_start_year = university_start_year
         self.university_end_year = university_end_year
         self.user_tier = user_tier  # Used for messaging. Can be standard or plus
+        self.last_application_date = last_application_date
+        self.new_jobs = new_jobs
+        self.new_users = new_users
         pass
 
     def __string__(self):
-        return f"{self.first_name},{self.last_name},{self.username},{self.password},{self.email_notifications},{self.sms},{self.targeted_advertising},{self.language},{self.major},{self.university},{self.title},{self.about},{self.experience},{self.education},{self.university_start_year},{self.university_end_year},{self.user_tier}"
+        return f"{self.first_name},{self.last_name},{self.username},{self.password},{self.email_notifications},{self.sms},{self.targeted_advertising},{self.language},{self.major},{self.university},{self.title},{self.about},{self.experience},{self.education},{self.university_start_year},{self.university_end_year},{self.user_tier},{self.last_application_date},{self.new_jobs},{self.new_users}"
 
     def change_password(self, new_password):
         self.password = new_password
@@ -65,7 +70,8 @@ class User:
                 self.sms, self.targeted_advertising, self.language,
                 self.major, self.university, self.title,
                 self.about, self.experience, self.education,
-                self.university_start_year, self.university_end_year, self.user_tier]
+                self.university_start_year, self.university_end_year, self.user_tier,
+                self.last_application_date, self.new_jobs, self.new_users]
 
     def set_success_story(self, success_story):
         self.success_story = success_story
