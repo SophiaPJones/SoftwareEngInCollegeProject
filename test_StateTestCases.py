@@ -512,3 +512,19 @@ class StateTestCases(TestCase):
         self.monkeypatch.setattr(
             'sys.stdin', io.StringIO('1\n1\nreply\nHello Back\n\n'))  # stdin
         assert len(newState.messages) == 1
+
+    def test_saved_jobs(self):
+        newState = State()
+        newState.account_file_name = 'testAccounts.csv'
+        newState.users["UserName1"] = User("first","second","UserName1","Password1!")
+        newState.current_user = newState.users["UserName1"]
+        newState.jobs.append(Job("Cool Job","Cool Job!","Cool employer",
+                                 "cool location","cool salary", "coollad",
+                                 {},"cool id"))
+        jobSearchPage = JobSearch(title="cool",login_required=False,state=newState,parent=None)
+        jobSearchPage.jobs_to_display = newState.jobs.copy()
+        jobSearchPage.save_job(0)
+        assert newState.current_user.saved_jobs == ["cool id"]
+        jobSearchPage.unsave_job(0)
+        assert newState.current_user.saved_jobs == []
+        pass

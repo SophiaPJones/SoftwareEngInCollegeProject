@@ -1187,12 +1187,17 @@ class JobSearch(Page):
 
     def display_jobs(self):
         has_been_applied_for = ""
+        has_been_saved = ""
         for i, job in enumerate(self.jobs_to_display):
             if (job in self.applied_jobs):
                 has_been_applied_for = "(Application Submitted)"
             else:
                 has_been_applied_for = ""
-            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary} {has_been_applied_for}\n\tDescription: {job.description}")
+            if(job.id in self.state.current_user.saved_jobs):
+                has_been_saved = "(Saved)"
+            else:
+                has_been_saved = ""
+            print(f"{i+1}. Title: {job.title}, Employer: {job.employer}, Location: {job.location}, Salary: {job.salary} {has_been_applied_for} {has_been_saved}\n\tDescription: {job.description}")
         print(f"{self.split_star}")
 
     def menu(self):
@@ -1200,6 +1205,8 @@ class JobSearch(Page):
         print("\t>1. Apply to a position")
         print("\t>2. Filter by jobs you've applied for.")
         print("\t>3. Filter by jobs you haven't applied for.")
+        print("\t>4. Save or Unsave Jobs.")
+        print("\t>5. Filter by Saved Jobs.")
         selection = input(
             "\nEnter the number corresponding to your selection: ")
         selection_num = -1
@@ -1237,7 +1244,37 @@ class JobSearch(Page):
                                     not in job.applications.keys()]
             self.onLoad()
             return
+        elif (selection_num == 4):
+            job_selection = input("\nEnter the number corresponding to the job you'd like to save/unsave.")
+            job_selection_num = -1
+            try:
+                job_selection_num = int(job_selection)
+            except:
+                pass
+            if(job_selection_num - 1 >=0 and job_selection_num -1 < len(self.jobs_to_display)):
+                job = self.jobs_to_display[job_selection_num-1]
+                if(job.id in self.state.current_user.saved_jobs):
+                    self.unsave_job(job_selection_num-1)
+                else:
+                    self.save_job(job_selection_num -1)
+            self.onLoad()
+            return
+        elif(selection_num == 5):
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if job.id in self.state.current_user.saved_jobs]
+            self.onLoad()
+            return
 
+    def unsave_job(self, job_index):
+        job = self.jobs_to_display[job_index]
+        self.state.current_user.saved_jobs = [sjob for sjob in self.state.current_user.saved_jobs if sjob != job.id]
+        self.state.users[self.state.current_user.username] = self.state.current_user
+        self.state.save_accounts()
+    def save_job(self, job_index):
+        job = self.jobs_to_display[job_index]
+        self.state.current_user.saved_jobs.append(str(job.id))
+        self.state.users[self.state.current_user.username] = self.state.current_user
+        self.state.save_accounts()
     def apply(self, job_id):
         job = self.jobs_to_display[job_id]
         if (job.poster == self.state.current_user.username):

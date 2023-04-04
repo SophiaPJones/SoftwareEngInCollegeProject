@@ -2,8 +2,11 @@
 import uuid;
 
 class Job():
-    def __init__(self, title, description, employer, location, salary, poster, applications = {}):
-        self.id = uuid.uuid4()
+    def __init__(self, title, description, employer, location, salary, poster, applications = {}, id = None):
+        if id == None:
+            self.id = str(uuid.uuid4())
+        else:
+            self.id = id
         self.title = title
         self.description = description
         self.employer = employer
