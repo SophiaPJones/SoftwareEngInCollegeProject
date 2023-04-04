@@ -27,7 +27,8 @@ class User:
                  major="", university="", title="",
                  about="", experience="", education="",
                  university_start_year="", university_end_year="", user_tier="standard",
-                 last_application_date="2000-01-01 00:00:00", new_jobs="", new_users=""):  # date used that is definitely > 7 days old
+                 last_application_date="2000-01-01 00:00:00", new_jobs="", new_users="",
+                 saved_jobs = []):  # date used that is definitely > 7 days old
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -56,6 +57,7 @@ class User:
         self.last_application_date = last_application_date
         self.new_jobs = new_jobs
         self.new_users = new_users
+        self.saved_jobs = saved_jobs #list of job IDs.
         pass
 
     def __string__(self):
@@ -71,7 +73,8 @@ class User:
                 self.major, self.university, self.title,
                 self.about, self.experience, self.education,
                 self.university_start_year, self.university_end_year, self.user_tier,
-                self.last_application_date, self.new_jobs, self.new_users]
+                self.last_application_date, self.new_jobs, self.new_users,
+                self.saved_jobs]
 
     def set_success_story(self, success_story):
         self.success_story = success_story

@@ -5,7 +5,7 @@ import uuid;
 class Application():
     def __init__(self, job_id, user, graduation_date, proposed_start_date, paragraph, id = None):
         if id == None:
-            self.id = uuid.uuid4()
+            self.id = str(uuid.uuid4())
         else:
             self.id = id
         self.job_id = job_id

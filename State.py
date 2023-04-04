@@ -40,6 +40,7 @@ class State:
                     account[6] = account[6] == "True"
                     account[7] = account[7] == "True"
                     account[8] = account[8] == "True"
+                    account[21] = ast.literal_eval(account[21])
                     self.users[account[2]] = User.User(
                         *account)  # Uni end year
             # self.load_friends()
@@ -101,7 +102,8 @@ class State:
                         job[4],
                         job[5],
                         job[6],
-                        applications=ast.literal_eval(job[7])
+                        applications=ast.literal_eval(job[7]),
+                        id = job[0]
                     ))
                 return True
         except:
