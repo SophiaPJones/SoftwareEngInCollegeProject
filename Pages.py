@@ -1168,6 +1168,7 @@ class ManageJobs(Page):
 class JobSearch(Page):
     def __init__(self, title="", login_required=True, state=State(), parent=None):
         self.first_load = True
+        self.filter = "None"
         super(JobSearch, self).__init__(title, login_required, state, parent)
 
     def print_content(self):
@@ -1207,6 +1208,8 @@ class JobSearch(Page):
         print("\t>3. Filter by jobs you haven't applied for.")
         print("\t>4. Save or Unsave Jobs.")
         print("\t>5. Filter by Saved Jobs.")
+        print("\t>6. Clear Filters.")
+
         selection = input(
             "\nEnter the number corresponding to your selection: ")
         selection_num = -1
@@ -1236,12 +1239,40 @@ class JobSearch(Page):
             self.jobs_to_display = [job for job in self.state.jobs
                                     if self.state.current_user.username
                                     in job.applications.keys()]
+            self.filter = "applied"
             self.onLoad()
             return
         elif (selection_num == 3):
             self.jobs_to_display = [job for job in self.state.jobs
                                     if self.state.current_user.username
                                     not in job.applications.keys()]
+            self.filter = "notapplied"
+            self.onLoad()
+            return
+        elif (selection_num == 4):
+            job_selection = input("\nEnter the number corresponding to the job you'd like to save/unsave. ")
+            job_selection_num = -1
+            try:
+                job_selection_num = int(job_selection)
+            except:
+                pass
+            if(job_selection_num - 1 >=0 and job_selection_num -1 < len(self.jobs_to_display)):
+                job = self.jobs_to_display[job_selection_num-1]
+                if(job.id in self.state.current_user.saved_jobs):
+                    self.unsave_job(job_selection_num-1)
+                else:
+                    self.save_job(job_selection_num -1)
+            self.onLoad()
+            return
+        elif(selection_num == 5):
+            self.filter = "saved"
+            self.jobs_to_display = [job for job in self.state.jobs
+                                    if job.id in self.state.current_user.saved_jobs]
+            self.onLoad()
+            return
+        elif(selection_num == 6):
+            self.filter = "None"
+            self.jobs_to_display = self.state.jobs.copy()
             self.onLoad()
             return
         elif (selection_num == 4):
@@ -1269,6 +1300,9 @@ class JobSearch(Page):
         job = self.jobs_to_display[job_index]
         self.state.current_user.saved_jobs = [sjob for sjob in self.state.current_user.saved_jobs if sjob != job.id]
         self.state.users[self.state.current_user.username] = self.state.current_user
+        if(self.filter == "saved"):
+            self.jobs_to_display = [djob for djob in self.jobs_to_display if job.id != djob.id]
+
         self.state.save_accounts()
     def save_job(self, job_index):
         job = self.jobs_to_display[job_index]

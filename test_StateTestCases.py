@@ -368,7 +368,7 @@ class StateTestCases(TestCase):
 
     def test_creating_account(self):
         newState = State()
-        newState.account_file_name = 'accounts.csv'
+        newState.account_file_name = 'testAccounts.csv'
         user = User("Ty", "Piesco", "typies", "Password1!", "I am big success", True, True, True, 0, "Computer science",
                     "University of South Florida",
                     "Student", "This is the about", "This is the experience", "This is the Education", "2020", "2024")
@@ -381,7 +381,7 @@ class StateTestCases(TestCase):
 
     def test_send_message_standard(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "Username1", "Password1!")
         newState.users["UserName2"] = User(
@@ -396,7 +396,7 @@ class StateTestCases(TestCase):
 
     def test_send_message_plus(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "Username1", "Password1!")
         newState.users["UserName2"] = User(
@@ -411,7 +411,7 @@ class StateTestCases(TestCase):
 
     def test_fail_send_message_non_friend_standard(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "Username1", "Password1!")
         newState.users["UserName2"] = User(
@@ -425,7 +425,7 @@ class StateTestCases(TestCase):
 
     def test_receive_message(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "UserName1", "Password1!")
         newState.users["UserName2"] = User(
@@ -444,7 +444,7 @@ class StateTestCases(TestCase):
 
     def test_keep_inbox_message(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "UserName1", "Password1!")
         newState.users["UserName2"] = User(
@@ -468,7 +468,7 @@ class StateTestCases(TestCase):
 
     def test_delete_inbox_message(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "UserName1", "Password1!")
         newState.users["UserName2"] = User(
@@ -492,7 +492,7 @@ class StateTestCases(TestCase):
 
     def test_reply_inbox_message(self):
         newState = State()
-        newState.message_file_name = 'messages.csv'
+        newState.message_file_name = 'testMessages.csv'
         newState.users["UserName1"] = User(
             "first", "second", "UserName1", "Password1!")
         newState.users["UserName2"] = User(
